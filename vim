@@ -1,0 +1,4 @@
+NEXT_PUBLIC_IDENTITY_API_URL=http://localhost:8000
+NEXT_PUBLIC_VIDEO_API_URL=http://localhost:8003/api/v1
+NEXT_PUBLIC_UPLOAD_API_URL=http://localhost:8002
+NEXT_PUBLIC_LIVE_API_URL=http://localhost:8004
