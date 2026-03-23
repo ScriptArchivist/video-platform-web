@@ -1,11 +1,7 @@
 {
   "/login/page": "app/login/page.js",
-  "/(protected)/videos/new/page": "app/(protected)/videos/new/page.js",
-  "/(protected)/videos/[id]/page": "app/(protected)/videos/[id]/page.js",
   "/(protected)/live/page": "app/(protected)/live/page.js",
   "/(protected)/live/active/page": "app/(protected)/live/active/page.js",
-  "/(protected)/videos/[id]/edit/page": "app/(protected)/videos/[id]/edit/page.js",
-  "/(protected)/profile/page": "app/(protected)/profile/page.js",
-  "/(protected)/dashboard/page": "app/(protected)/dashboard/page.js",
-  "/(protected)/videos/page": "app/(protected)/videos/page.js"
+  "/(protected)/watch/live/[streamKey]/page": "app/(protected)/watch/live/[streamKey]/page.js",
+  "/(protected)/dashboard/page": "app/(protected)/dashboard/page.js"
 }

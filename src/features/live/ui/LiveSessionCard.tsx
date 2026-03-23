@@ -34,6 +34,7 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
 
         <p className="text-sm text-slate-500">
           Status: {session.status}
+          {!session.hls_ready ? ' (starting stream...)' : ''}
         </p>
       </div>
 

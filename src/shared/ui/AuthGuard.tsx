@@ -8,13 +8,26 @@ import { PageLoadingState } from './PageState';
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { token } = useAuth();
+  const { token, isReady } = useAuth();
 
   useEffect(() => {
+    if (!isReady) return;
+
     if (!token && pathname !== '/login') {
       router.replace('/login');
     }
-  }, [token, pathname, router]);
+  }, [isReady, token, pathname, router]);
+
+  if (!isReady) {
+    return (
+      <div className="p-6">
+        <PageLoadingState
+          title="Проверка сессии"
+          description="Инициализация авторизации."
+        />
+      </div>
+    );
+  }
 
   if (!token) {
     return (

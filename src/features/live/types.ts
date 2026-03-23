@@ -11,6 +11,7 @@ export interface LiveSessionDTO {
   stopped_at: string | null;
   expires_at: string | null;
   error: string | null;
+  hls_url?: string | null;
   thumbnail_url?: string | null;
 }
 
