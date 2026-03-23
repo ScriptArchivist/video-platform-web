@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { createPortal } from 'react-dom';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -37,35 +36,29 @@ export function ConfirmDialog({
 
     document.addEventListener('keydown', handleKeyDown);
 
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = originalOverflow;
     };
   }, [open, isLoading, onClose]);
 
-  if (!open || typeof document === 'undefined') {
+  if (!open) {
     return null;
   }
 
-  return createPortal(
+  return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isLoading) {
           onClose();
         }
       }}
     >
-      <div className="absolute inset-0 bg-black/40" />
-
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        className="relative z-[201] w-full max-w-md rounded-xl border bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-xl border bg-white p-6 shadow-xl"
       >
         <div className="space-y-2">
           <h2
@@ -100,7 +93,6 @@ export function ConfirmDialog({
           </button>
         </div>
       </div>
-    </div>,
-    document.body,
+    </div>
   );
 }

@@ -11,8 +11,6 @@ import { parseApiError } from '@/shared/api/client';
 import type { VideoVisibility } from '@/features/videos/types';
 import { useToast } from '@/shared/ui/toast/ToastProvider';
 
-const { showSuccess, showError } = useToast();
-
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
@@ -22,6 +20,8 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export default function EditVideoPage() {
+  const { showSuccess, showError } = useToast();
+
   const params = useParams();
   const router = useRouter();
   const rawId = params?.id;
@@ -94,14 +94,13 @@ export default function EditVideoPage() {
           visibility: values.visibility as VideoVisibility,
         },
       });
+
       showSuccess('Video updated');
       router.push(`/videos/${videoId}`);
-
-      router.push(`/videos/${videoId}`);
     } catch (error) {
-      showError(parsed.message);
       const parsed = parseApiError(error);
       setSubmitError(parsed.message);
+      showError(parsed.message);
 
       if (parsed.fieldErrors) {
         Object.entries(parsed.fieldErrors).forEach(([key, messages]) => {
