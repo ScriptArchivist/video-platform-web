@@ -36,6 +36,7 @@ export function ConfirmDialog({
     };
 
     document.addEventListener('keydown', handleKeyDown);
+
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
@@ -50,23 +51,27 @@ export function ConfirmDialog({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <button
-        type="button"
-        aria-label="Close dialog"
-        onClick={onClose}
-        disabled={isLoading}
-        className="absolute inset-0 bg-black/40"
-      />
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget && !isLoading) {
+          onClose();
+        }
+      }}
+    >
+      <div className="absolute inset-0 bg-black/40" />
 
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        className="relative z-10 w-full max-w-md rounded-xl border bg-white p-6 shadow-xl"
+        className="relative z-[201] w-full max-w-md rounded-xl border bg-white p-6 shadow-xl"
       >
         <div className="space-y-2">
-          <h2 id="confirm-dialog-title" className="text-lg font-semibold text-slate-900">
+          <h2
+            id="confirm-dialog-title"
+            className="text-lg font-semibold text-slate-900"
+          >
             {title}
           </h2>
 

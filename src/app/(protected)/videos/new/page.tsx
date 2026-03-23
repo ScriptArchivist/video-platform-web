@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ import { UploadProgress } from '@/features/upload/ui/UploadProgress';
 import { ProcessingStatePanel } from '@/features/upload/ui/ProcessingStatePanel';
 import { useVideoDetail } from '@/features/videos/hooks/useVideoDetail';
 import { parseApiError } from '@/shared/api/client';
+import { useToast } from '@/shared/ui/toast/ToastProvider';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -20,10 +21,13 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export default function NewVideoPage() {
+  const { showSuccess, showError } = useToast();
+
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [createdVideoId, setCreatedVideoId] = useState<number | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const readyToastShownRef = useRef(false);
 
   const uploadMutation = useUploadVideoFlow();
 
@@ -45,15 +49,21 @@ export default function NewVideoPage() {
 
     if (detailQuery.data.status === 'ready') {
       setSubmitError(null);
+
+      if (!readyToastShownRef.current) {
+        showSuccess('Video is ready');
+        readyToastShownRef.current = true;
+      }
     }
 
     if (detailQuery.data.status === 'failed' && detailQuery.data.error_message) {
       setSubmitError(detailQuery.data.error_message);
     }
-  }, [detailQuery.data]);
+  }, [detailQuery.data, showSuccess]);
 
   const onSubmit = form.handleSubmit(async (values) => {
     setSubmitError(null);
+    readyToastShownRef.current = false;
 
     if (!file) {
       form.setError('root', {
@@ -72,9 +82,11 @@ export default function NewVideoPage() {
       });
 
       setCreatedVideoId(createdVideo.id);
+      showSuccess('Upload started');
     } catch (error) {
       const parsed = parseApiError(error);
       setSubmitError(parsed.message);
+      showError(parsed.message);
 
       if (parsed.fieldErrors) {
         Object.entries(parsed.fieldErrors).forEach(([key, messages]) => {

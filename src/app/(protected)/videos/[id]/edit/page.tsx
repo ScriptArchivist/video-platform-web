@@ -9,6 +9,9 @@ import { useVideoDetail } from '@/features/videos/hooks/useVideoDetail';
 import { useUpdateVideo } from '@/features/videos/hooks/useUpdateVideo';
 import { parseApiError } from '@/shared/api/client';
 import type { VideoVisibility } from '@/features/videos/types';
+import { useToast } from '@/shared/ui/toast/ToastProvider';
+
+const { showSuccess, showError } = useToast();
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -91,9 +94,12 @@ export default function EditVideoPage() {
           visibility: values.visibility as VideoVisibility,
         },
       });
+      showSuccess('Video updated');
+      router.push(`/videos/${videoId}`);
 
       router.push(`/videos/${videoId}`);
     } catch (error) {
+      showError(parsed.message);
       const parsed = parseApiError(error);
       setSubmitError(parsed.message);
 

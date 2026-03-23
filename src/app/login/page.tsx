@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useAuth } from '@/features/auth/useAuth';
 import { parseApiError } from '@/shared/api/client';
+import { useToast } from '@/shared/ui/toast/ToastProvider';
 
 export default function LoginPage() {
   const { signIn } = useAuth();
+  const { showSuccess, showError } = useToast();
 
   const [username, setUsername] = useState('Vadim');
   const [password, setPassword] = useState('password');
@@ -19,8 +21,11 @@ export default function LoginPage() {
 
     try {
       await signIn({ username, password });
+      showSuccess('Logged in successfully');
     } catch (err) {
-      setError(parseApiError(err));
+      const parsed = parseApiError(err);
+      setError(parsed);
+      showError(parsed);
     } finally {
       setIsPending(false);
     }
