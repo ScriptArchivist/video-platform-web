@@ -25,7 +25,7 @@ export function VideoFilters({
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search videos..."
-        className="h-10 min-w-[280px] rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
+        className="h-10 min-w-[260px] flex-1 rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
       />
 
       <select
