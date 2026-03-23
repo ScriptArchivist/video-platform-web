@@ -1,0 +1,30 @@
+[01;34m.[0m
+├── [01;34msrc[0m
+│   ├── [01;34mapp[0m
+│   │   ├── [01;34mlogin[0m
+│   │   ├── [01;34m(protected)[0m
+│   │   ├── [01;34mproviders[0m
+│   │   ├── globals.css
+│   │   └── layout.tsx
+│   ├── [01;34mentities[0m
+│   │   ├── [01;34mlive[0m
+│   │   ├── [01;34muser[0m
+│   │   └── [01;34mvideo[0m
+│   ├── [01;34mfeatures[0m
+│   │   ├── [01;34mauth[0m
+│   │   ├── [01;34mlive[0m
+│   │   ├── [01;34mupload[0m
+│   │   └── [01;34mvideos[0m
+│   └── [01;34mshared[0m
+│       ├── [01;34mapi[0m
+│       ├── [01;34mconfig[0m
+│       ├── [01;34mtypes[0m
+│       └── [01;34mui[0m
+├── next.config.ts
+├── package.json
+├── package-lock.json
+├── structure.txt
+├── tsconfig.json
+└── vim
+
+20 directories, 8 files

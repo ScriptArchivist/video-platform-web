@@ -9,6 +9,7 @@ import { useLiveSession } from '@/features/live/hooks/useLiveSession';
 import { useStopLiveSession } from '@/features/live/hooks/useStopLiveSession';
 import { LiveStatusBadge } from '@/features/live/ui/LiveStatusBadge';
 import { parseApiError } from '@/shared/api/client';
+import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 
 const schema = z.object({
   title: z.string().optional(),
@@ -30,6 +31,7 @@ export default function LiveStudioPage() {
     thumbnail_url?: string | null;
   } | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
 
   const createMutation = useCreateLiveSession();
   const sessionQuery = useLiveSession(createdStreamKey);
@@ -209,12 +211,9 @@ export default function LiveStudioPage() {
               <button
                 type="button"
                 disabled={stopMutation.isPending}
-                onClick={async () => {
-                  try {
-                    await stopMutation.mutateAsync(currentSession.id);
-                  } catch (error) {
-                    setSubmitError(parseApiError(error));
-                  }
+                onClick={() => {
+                  setSubmitError(null);
+                  setIsStopDialogOpen(true);
                 }}
                 className="inline-flex h-10 items-center rounded-md border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -245,6 +244,27 @@ export default function LiveStudioPage() {
           </section>
         </div>
       ) : null}
+
+      <ConfirmDialog
+        open={isStopDialogOpen}
+        title="Stop live session?"
+        description="The live stream will be stopped. Viewers will no longer be able to watch it."
+        confirmText="Stop live"
+        cancelText="Cancel"
+        confirmButtonClassName="bg-red-600 text-white hover:bg-red-700"
+        isLoading={stopMutation.isPending}
+        onClose={() => setIsStopDialogOpen(false)}
+        onConfirm={async () => {
+          if (!currentSession) return;
+
+          try {
+            await stopMutation.mutateAsync(currentSession.id);
+            setIsStopDialogOpen(false);
+          } catch (error) {
+            setSubmitError(parseApiError(error).message);
+          }
+        }}
+      />
     </div>
   );
 }
