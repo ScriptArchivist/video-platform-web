@@ -53,7 +53,7 @@ export default function WatchLivePage() {
       <div className="p-6">
         <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-sm text-red-700">
           Failed to load live session:{' '}
-          {parseApiError(sessionQuery.error).message}
+          {parseApiError(sessionQuery.error)}
         </div>
       </div>
     );

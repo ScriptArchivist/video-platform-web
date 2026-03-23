@@ -21,9 +21,14 @@ export function AppQueryProvider({
               if (
                 maybeStatus === 401 ||
                 maybeStatus === 403 ||
-                maybeStatus === 404
+                maybeStatus === 404 ||
+                maybeStatus === 422
               ) {
                 return false;
+              }
+
+              if (typeof maybeStatus === 'number' && maybeStatus >= 500) {
+                return failureCount < 1;
               }
 
               return failureCount < 2;

@@ -28,7 +28,7 @@ export default function ActiveLiveSessionsPage() {
       <div className="p-6">
         <PageErrorState
           title="Не удалось загрузить активные трансляции"
-          description={parseApiError(activeQuery.error).message}
+          description={parseApiError(activeQuery.error)}
         />
       </div>
     );

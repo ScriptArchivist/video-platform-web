@@ -58,7 +58,7 @@ export default function LiveStudioPage() {
         thumbnail_url: response.thumbnail_url,
       });
     } catch (error) {
-      setSubmitError(parseApiError(error).message);
+      setSubmitError(parseApiError(error));
     }
   });
 
@@ -201,7 +201,7 @@ export default function LiveStudioPage() {
             await stopMutation.mutateAsync(currentSession.id);
             setIsStopDialogOpen(false);
           } catch (error) {
-            setSubmitError(parseApiError(error).message);
+            setSubmitError(parseApiError(error));
           }
         }}
       />

@@ -28,6 +28,17 @@ export function PageEmptyState({ title, description }: PageStateProps) {
   );
 }
 
+export function PageNotFoundState({ title, description }: PageStateProps) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
+      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+      {description ? (
+        <p className="mt-2 text-sm text-slate-500">{description}</p>
+      ) : null}
+    </div>
+  );
+}
+
 export function PageErrorState({ title, description }: PageStateProps) {
   return (
     <div className="rounded-xl border border-red-200 bg-red-50 p-8">
