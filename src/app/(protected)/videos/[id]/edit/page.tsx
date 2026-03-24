@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -10,6 +11,10 @@ import { useUpdateVideo } from '@/features/videos/hooks/useUpdateVideo';
 import { parseApiError } from '@/shared/api/client';
 import type { VideoVisibility } from '@/features/videos/types';
 import { useToast } from '@/shared/ui/toast/ToastProvider';
+import {
+  PageErrorState,
+  PageLoadingState,
+} from '@/shared/ui/PageState';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -54,30 +59,33 @@ export default function EditVideoPage() {
 
   if (!Number.isFinite(videoId)) {
     return (
-      <div className="p-6">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-          Invalid video id.
-        </div>
+      <div className="max-w-3xl space-y-6 p-6">
+        <PageErrorState
+          title="Invalid video id"
+          description="The requested video id is not valid."
+        />
       </div>
     );
   }
 
   if (detailQuery.isLoading) {
     return (
-      <div className="p-6">
-        <div className="rounded-xl border bg-white p-8 text-sm text-slate-500">
-          Loading video...
-        </div>
+      <div className="max-w-3xl space-y-6 p-6">
+        <PageLoadingState
+          title="Loading video"
+          description="Preparing current values for editing."
+        />
       </div>
     );
   }
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <div className="p-6">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-sm text-red-700">
-          Failed to load video: {detailQuery.isError ? parseApiError(detailQuery.error).message : 'Not found'}
-        </div>
+      <div className="max-w-3xl space-y-6 p-6">
+        <PageErrorState
+          title="Failed to load video"
+          description={detailQuery.isError ? parseApiError(detailQuery.error).message : 'Video not found.'}
+        />
       </div>
     );
   }
@@ -121,9 +129,25 @@ export default function EditVideoPage() {
 
   return (
     <div className="max-w-3xl space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Edit video</h1>
-        <p className="mt-1 text-sm text-slate-500">Video #{videoId}</p>
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+        <div>
+          <p className="text-sm text-slate-500">Video #{videoId}</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
+            Edit video
+          </h1>
+          <p className="mt-2 text-sm text-slate-500">
+            Update metadata and return to the video detail page after saving.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/videos/${videoId}`}
+            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            Back to detail
+          </Link>
+        </div>
       </div>
 
       <form
@@ -134,7 +158,8 @@ export default function EditVideoPage() {
           <label className="text-sm font-medium text-slate-700">Title</label>
           <input
             {...form.register('title')}
-            className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
+            disabled={updateMutation.isPending}
+            className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
           />
           {form.formState.errors.title ? (
             <p className="text-sm text-red-700">
@@ -147,7 +172,8 @@ export default function EditVideoPage() {
           <label className="text-sm font-medium text-slate-700">Description</label>
           <textarea
             {...form.register('description')}
-            className="min-h-[120px] w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400"
+            disabled={updateMutation.isPending}
+            className="min-h-[120px] w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
           />
           {form.formState.errors.description ? (
             <p className="text-sm text-red-700">
@@ -160,7 +186,8 @@ export default function EditVideoPage() {
           <label className="text-sm font-medium text-slate-700">Visibility</label>
           <select
             {...form.register('visibility')}
-            className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
+            disabled={updateMutation.isPending}
+            className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
           >
             <option value="private">private</option>
             <option value="public">public</option>
@@ -179,7 +206,7 @@ export default function EditVideoPage() {
           </div>
         ) : null}
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-2">
           <button
             type="submit"
             disabled={updateMutation.isPending}
@@ -191,10 +218,15 @@ export default function EditVideoPage() {
           <button
             type="button"
             onClick={() => router.push(`/videos/${videoId}`)}
-            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            disabled={updateMutation.isPending}
+            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
+
+          <span className="text-sm text-slate-500">
+            After saving, you will return to the detail page.
+          </span>
         </div>
       </form>
     </div>
