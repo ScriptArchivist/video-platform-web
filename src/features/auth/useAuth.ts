@@ -24,7 +24,7 @@ export function useAuth() {
       localStorage.setItem(ACCESS_TOKEN_KEY, response.access_token);
       setToken(response.access_token);
 
-      router.push('/dashboard');
+      router.push('/videos');
     },
     [router],
   );

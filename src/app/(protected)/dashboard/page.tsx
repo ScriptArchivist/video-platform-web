@@ -1,3 +1,5 @@
-export default function Dashboard() {
-  return <div className="p-6">Dashboard</div>;
+import { redirect } from 'next/navigation';
+
+export default function DashboardPage() {
+  redirect('/videos');
 }

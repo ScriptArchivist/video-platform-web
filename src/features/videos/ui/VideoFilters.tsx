@@ -1,62 +1,66 @@
 'use client';
 
-import type { VideoStatus, VideoVisibility } from '../types';
+import type { VideoVisibility } from '../types';
 
-interface VideoFiltersProps {
+interface Props {
   search: string;
-  status?: VideoStatus;
   visibility?: VideoVisibility;
+  total?: number;
+  showReset?: boolean;
   onSearchChange: (value: string) => void;
-  onStatusChange: (value?: VideoStatus) => void;
   onVisibilityChange: (value?: VideoVisibility) => void;
+  onReset: () => void;
 }
 
 export function VideoFilters({
   search,
-  status,
   visibility,
+  total,
+  showReset,
   onSearchChange,
-  onStatusChange,
   onVisibilityChange,
-}: VideoFiltersProps) {
+  onReset,
+}: Props) {
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-4">
-      <input
-        value={search}
-        onChange={(e) => onSearchChange(e.target.value)}
-        placeholder="Search videos..."
-        className="h-10 min-w-[260px] flex-1 rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
-      />
+    <div className="space-y-3 rounded-xl border bg-white p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <input
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Search videos..."
+          className="h-10 min-w-[260px] flex-1 rounded-md border px-3 text-sm"
+        />
 
-      <select
-        value={status ?? ''}
-        onChange={(e) =>
-          onStatusChange((e.target.value || undefined) as VideoStatus | undefined)
-        }
-        className="h-10 rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
-      >
-        <option value="">All statuses</option>
-        <option value="uploading">uploading</option>
-        <option value="uploaded">uploaded</option>
-        <option value="processing">processing</option>
-        <option value="ready">ready</option>
-        <option value="failed">failed</option>
-      </select>
+        <select
+          value={visibility ?? ''}
+          onChange={(e) =>
+            onVisibilityChange(
+              (e.target.value || undefined) as VideoVisibility | undefined,
+            )
+          }
+          className="h-10 rounded-md border px-3 text-sm"
+        >
+          <option value="">All visibility</option>
+          <option value="private">private</option>
+          <option value="public">public</option>
+          <option value="unlisted">unlisted</option>
+        </select>
 
-      <select
-        value={visibility ?? ''}
-        onChange={(e) =>
-          onVisibilityChange(
-            (e.target.value || undefined) as VideoVisibility | undefined,
-          )
-        }
-        className="h-10 rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
-      >
-        <option value="">All visibility</option>
-        <option value="private">private</option>
-        <option value="public">public</option>
-        <option value="unlisted">unlisted</option>
-      </select>
+        {showReset && (
+          <button
+            onClick={onReset}
+            className="h-10 rounded-md border px-3 text-sm"
+          >
+            Reset
+          </button>
+        )}
+      </div>
+
+      {typeof total === 'number' && (
+        <div className="text-sm text-slate-500">
+          {total} video{total === 1 ? '' : 's'}
+        </div>
+      )}
     </div>
   );
 }

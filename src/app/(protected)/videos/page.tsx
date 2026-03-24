@@ -6,7 +6,7 @@ import { useVideosList } from '@/features/videos/hooks/useVideosList';
 import { VideoFilters } from '@/features/videos/ui/VideoFilters';
 import { VideosTable } from '@/features/videos/ui/VideosTable';
 import { PaginationControls } from '@/features/videos/ui/PaginationControls';
-import type { VideoStatus, VideoVisibility } from '@/features/videos/types';
+import type { VideoVisibility } from '@/features/videos/types';
 import { parseApiError } from '@/shared/api/client';
 import {
   PageEmptyState,
@@ -14,26 +14,11 @@ import {
   PageLoadingState,
 } from '@/shared/ui/PageState';
 
-const ALLOWED_STATUSES: VideoStatus[] = [
-  'uploading',
-  'uploaded',
-  'processing',
-  'ready',
-  'failed',
-];
-
 const ALLOWED_VISIBILITY: VideoVisibility[] = [
   'public',
   'private',
   'unlisted',
 ];
-
-function parseStatus(value: string | null): VideoStatus | undefined {
-  if (!value) return undefined;
-  return ALLOWED_STATUSES.includes(value as VideoStatus)
-    ? (value as VideoStatus)
-    : undefined;
-}
 
 function parseVisibility(value: string | null): VideoVisibility | undefined {
   if (!value) return undefined;
@@ -53,18 +38,17 @@ export default function VideosPage() {
   const searchParams = useSearchParams();
 
   const initialSearch = searchParams.get('search') ?? '';
-  const initialStatus = parseStatus(searchParams.get('status'));
   const initialVisibility = parseVisibility(searchParams.get('visibility'));
   const initialPage = parsePage(searchParams.get('page'));
 
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [search, setSearch] = useState(initialSearch);
-  const [status, setStatus] = useState<VideoStatus | undefined>(initialStatus);
   const [visibility, setVisibility] = useState<VideoVisibility | undefined>(
     initialVisibility,
   );
   const [page, setPage] = useState(initialPage);
 
+  // debounce search
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(searchInput);
@@ -74,97 +58,88 @@ export default function VideosPage() {
     return () => clearTimeout(timeout);
   }, [searchInput]);
 
+  // URL sync
   useEffect(() => {
     const params = new URLSearchParams();
 
-    if (search) {
-      params.set('search', search);
-    }
+    if (search) params.set('search', search);
+    if (visibility) params.set('visibility', visibility);
+    if (page > 1) params.set('page', String(page));
 
-    if (status) {
-      params.set('status', status);
-    }
-
-    if (visibility) {
-      params.set('visibility', visibility);
-    }
-
-    if (page > 1) {
-      params.set('page', String(page));
-    }
-
-    const queryString = params.toString();
-    const nextUrl = queryString ? `${pathname}?${queryString}` : pathname;
+    const nextUrl = params.toString()
+      ? `${pathname}?${params.toString()}`
+      : pathname;
 
     router.replace(nextUrl, { scroll: false });
-  }, [search, status, visibility, page, pathname, router]);
+  }, [search, visibility, page, pathname, router]);
 
   const params = useMemo(
     () => ({
       search: search || undefined,
-      status,
       visibility,
       page,
       per_page: 20,
     }),
-    [search, status, visibility, page],
+    [search, visibility, page],
   );
 
   const videosQuery = useVideosList(params);
 
-  const hasFilters = Boolean(search || status || visibility);
+  const hasFilters = Boolean(search || visibility);
+
+  useEffect(() => {
+    if (!videosQuery.data) return;
+    if (videosQuery.data.items.length === 0 && page > 1) {
+      setPage(1);
+    }
+  }, [videosQuery.data, page]);
 
   return (
     <div className="space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Videos</h1>
         <p className="mt-1 text-sm text-slate-500">
-          Просмотр загруженных видео и их статусов обработки.
+          Просмотр загруженных видео.
         </p>
       </div>
 
       <VideoFilters
         search={searchInput}
-        status={status}
         visibility={visibility}
         onSearchChange={setSearchInput}
-        onStatusChange={(value) => {
-          setStatus(value);
-          setPage(1);
-        }}
         onVisibilityChange={(value) => {
           setVisibility(value);
           setPage(1);
         }}
+        onReset={() => {
+          setSearchInput('');
+          setSearch('');
+          setVisibility(undefined);
+          setPage(1);
+        }}
+        showReset={hasFilters}
+        total={videosQuery.data?.total}
       />
 
-      {videosQuery.isLoading ? (
-        <PageLoadingState
-          title="Загрузка видео"
-          description="Получаем список видео с backend."
-        />
-      ) : null}
+      {videosQuery.isLoading && !videosQuery.data && (
+        <PageLoadingState title="Загрузка видео" />
+      )}
 
-      {videosQuery.isError ? (
+      {videosQuery.isError && (
         <PageErrorState
-          title="Не удалось загрузить видео"
+          title="Ошибка загрузки"
           description={parseApiError(videosQuery.error)}
         />
-      ) : null}
+      )}
 
-      {videosQuery.data && videosQuery.data.items.length === 0 ? (
+      {videosQuery.data && videosQuery.data.items.length === 0 && (
         <PageEmptyState
           title={hasFilters ? 'Ничего не найдено' : 'Видео отсутствуют'}
-          description={
-            hasFilters
-              ? 'Попробуй изменить фильтры поиска.'
-              : 'Загрузи первое видео, чтобы оно появилось здесь.'
-          }
         />
-      ) : null}
+      )}
 
-      {videosQuery.data && videosQuery.data.items.length > 0 ? (
-        <>
+      {videosQuery.data && videosQuery.data.items.length > 0 && (
+        <div className={videosQuery.isFetching ? 'opacity-60' : ''}>
           <VideosTable items={videosQuery.data.items} />
 
           <PaginationControls
@@ -173,8 +148,8 @@ export default function VideosPage() {
             total={videosQuery.data.total}
             onPageChange={setPage}
           />
-        </>
-      ) : null}
+        </div>
+      )}
     </div>
   );
 }

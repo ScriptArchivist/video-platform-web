@@ -1,43 +1,37 @@
 'use client';
 
-interface PaginationControlsProps {
-  page: number;
-  perPage: number;
-  total: number;
-  onPageChange: (page: number) => void;
-}
-
 export function PaginationControls({
   page,
   perPage,
   total,
   onPageChange,
-}: PaginationControlsProps) {
+}: {
+  page: number;
+  perPage: number;
+  total: number;
+  onPageChange: (p: number) => void;
+}) {
   const totalPages = Math.max(1, Math.ceil(total / perPage));
-  const canGoPrev = page > 1;
-  const canGoNext = page < totalPages;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex items-center justify-between">
       <div className="text-sm text-slate-500">
-        Page {page} of {totalPages} · {total} items
+        Page {page} of {totalPages}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex gap-2">
         <button
-          type="button"
-          disabled={!canGoPrev}
+          disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="inline-flex h-9 items-center rounded-md border border-slate-200 px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="px-3 py-1 border rounded disabled:opacity-50"
         >
-          Previous
+          Prev
         </button>
 
         <button
-          type="button"
-          disabled={!canGoNext}
+          disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="inline-flex h-9 items-center rounded-md border border-slate-200 px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="px-3 py-1 border rounded disabled:opacity-50"
         >
           Next
         </button>

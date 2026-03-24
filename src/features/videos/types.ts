@@ -20,6 +20,7 @@ export interface VideoOwnerDTO {
 export interface VideoListItemDTO {
   id: number;
   owner_id: number;
+  owner?: VideoOwnerDTO;
   title: string;
   description: string | null;
   visibility: VideoVisibility;
