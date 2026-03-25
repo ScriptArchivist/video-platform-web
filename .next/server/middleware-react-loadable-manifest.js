@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"features/live/ui/LivePlayerPanel.tsx -> hls.js\":{\"id\":\"features/live/ui/LivePlayerPanel.tsx -> hls.js\",\"files\":[\"static/chunks/_app-pages-browser_node_modules_hls_js_dist_hls_mjs.js\"]}}"

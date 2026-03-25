@@ -1,10 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLiveSession } from '@/features/live/hooks/useLiveSession';
 import { LiveStatusBadge } from '@/features/live/ui/LiveStatusBadge';
 import { LivePlayerPanel } from '@/features/live/ui/LivePlayerPanel';
 import { parseApiError } from '@/shared/api/client';
+import {
+  PageErrorState,
+  PageLoadingState,
+  PageNotFoundState,
+} from '@/shared/ui/PageState';
 
 function resolveLiveHlsUrl(session: {
   hls_url?: string | null;
@@ -30,31 +36,33 @@ export default function WatchLivePage() {
 
   if (!streamKey) {
     return (
-      <div className="p-6">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-          Invalid stream key.
-        </div>
+      <div className="max-w-6xl space-y-6 p-6">
+        <PageErrorState
+          title="Invalid stream key"
+          description="The requested stream key is not valid."
+        />
       </div>
     );
   }
 
   if (sessionQuery.isLoading) {
     return (
-      <div className="p-6">
-        <div className="rounded-xl border bg-white p-8 text-sm text-slate-500">
-          Loading live session...
-        </div>
+      <div className="max-w-6xl space-y-6 p-6">
+        <PageLoadingState
+          title="Loading live session"
+          description="Fetching live session details and playback state."
+        />
       </div>
     );
   }
 
   if (sessionQuery.isError) {
     return (
-      <div className="p-6">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-sm text-red-700">
-          Failed to load live session:{' '}
-          {parseApiError(sessionQuery.error)}
-        </div>
+      <div className="max-w-6xl space-y-6 p-6">
+        <PageErrorState
+          title="Failed to load live session"
+          description={parseApiError(sessionQuery.error)}
+        />
       </div>
     );
   }
@@ -63,10 +71,11 @@ export default function WatchLivePage() {
 
   if (!session) {
     return (
-      <div className="p-6">
-        <div className="rounded-xl border bg-white p-8 text-sm text-slate-500">
-          Live session not found.
-        </div>
+      <div className="max-w-6xl space-y-6 p-6">
+        <PageNotFoundState
+          title="Live session not found"
+          description="The requested live session does not exist or is no longer available."
+        />
       </div>
     );
   }
@@ -75,29 +84,42 @@ export default function WatchLivePage() {
   const isLive = session.status === 'started';
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+    <div className="max-w-6xl space-y-6 p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             {session.title ?? 'Live stream'}
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-500">
             Stream key: {session.stream_key}
           </p>
         </div>
 
-        <LiveStatusBadge status={session.status} />
+        <div className="flex flex-wrap items-center gap-3">
+          <LiveStatusBadge status={session.status} />
+
+          <Link
+            href="/live/active"
+            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            Back to active sessions
+          </Link>
+        </div>
       </div>
 
-      {hlsUrl ? (
-        <LivePlayerPanel src={hlsUrl} />
-      ) : (
-        <div className="rounded-xl border bg-white p-6 text-sm text-slate-500">
-          {isLive
-            ? 'Stream is starting... HLS will appear in a few seconds.'
-            : 'Stream is not live.'}
-        </div>
-      )}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Playback</h2>
+
+        {hlsUrl ? (
+          <LivePlayerPanel src={hlsUrl} />
+        ) : (
+          <div className="rounded-xl border bg-white p-6 text-sm text-slate-500">
+            {isLive
+              ? 'Stream is starting. HLS playback will appear in a few seconds.'
+              : 'This stream is not currently live.'}
+          </div>
+        )}
+      </section>
 
       {session.error ? (
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">

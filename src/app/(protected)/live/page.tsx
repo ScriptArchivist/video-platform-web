@@ -47,7 +47,7 @@ export default function LiveStudioPage() {
     try {
       const response = await createMutation.mutateAsync({
         title: values.title?.trim() ? values.title.trim() : undefined,
-        ttl_seconds: 1800, // 👈 фиксированное значение
+        ttl_seconds: 1800,
         stream_key: values.stream_key?.trim() ? values.stream_key.trim() : null,
       });
 
@@ -73,72 +73,84 @@ export default function LiveStudioPage() {
 
   return (
     <div className="max-w-5xl space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Live studio</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Создание live session и мониторинг её статуса.
-        </p>
-      </div>
-
-      {/* 🔥 ВАЖНОЕ СООБЩЕНИЕ */}
-      <div className="rounded-md border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
-        После запуска стрима HLS становится доступен не сразу.
-        <br />
-        Подождите несколько секунд, пока поток инициализируется.
-      </div>
-
-      <form
-        onSubmit={onSubmit}
-        className="space-y-5 rounded-xl border bg-white p-6"
-      >
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
-            Title (optional)
-          </label>
-          <input
-            {...form.register('title')}
-            className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
-          />
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Live studio
+          </h1>
+          <p className="mt-2 text-sm text-slate-500">
+            Create a live session, get RTMP and HLS endpoints, and monitor the stream status.
+          </p>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
-            Stream key (optional)
-          </label>
-          <input
-            {...form.register('stream_key')}
-            className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
-          />
-        </div>
-
-        {submitError ? (
-          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-            {submitError}
-          </div>
-        ) : null}
-
-        <div>
-          <button
-            type="submit"
-            disabled={createMutation.isPending}
-            className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/live/active"
+            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            {createMutation.isPending ? 'Creating...' : 'Create live session'}
-          </button>
+            Active sessions
+          </Link>
         </div>
-      </form>
+      </div>
+
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+        After the stream starts, HLS may appear with a short delay while the live output is initializing.
+      </div>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Create session</h2>
+
+        <form
+          onSubmit={onSubmit}
+          className="space-y-5 rounded-xl border bg-white p-6"
+        >
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
+              Title (optional)
+            </label>
+            <input
+              {...form.register('title')}
+              className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
+              Stream key (optional)
+            </label>
+            <input
+              {...form.register('stream_key')}
+              className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400"
+            />
+          </div>
+
+          {submitError ? (
+            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {submitError}
+            </div>
+          ) : null}
+
+          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3">
+            <button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {createMutation.isPending ? 'Creating...' : 'Create live session'}
+            </button>
+          </div>
+        </form>
+      </section>
 
       {currentSession && sessionMeta ? (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <section className="rounded-xl border bg-white p-6">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-lg font-semibold text-slate-900">
-                Session info
-              </h2>
-              <LiveStatusBadge status={currentSession.status} />
-            </div>
+        <section className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-slate-900">Session info</h2>
+            <LiveStatusBadge status={currentSession.status} />
+          </div>
 
-            <dl className="space-y-3 text-sm">
+          <div className="rounded-xl border bg-white p-6">
+            <dl className="space-y-4 text-sm">
               <div>
                 <dt className="mb-1 text-slate-500">Stream key</dt>
                 <dd className="break-all text-slate-900">
@@ -148,9 +160,7 @@ export default function LiveStudioPage() {
 
               <div>
                 <dt className="mb-1 text-slate-500">RTMP URL</dt>
-                <dd className="break-all text-slate-900">
-                  {sessionMeta.rtmp_url}
-                </dd>
+                <dd className="break-all text-slate-900">{sessionMeta.rtmp_url}</dd>
               </div>
 
               <div>
@@ -161,7 +171,7 @@ export default function LiveStudioPage() {
               </div>
             </dl>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
               <button
                 type="button"
                 disabled={stopMutation.isPending}
@@ -181,8 +191,8 @@ export default function LiveStudioPage() {
                 Open watch page
               </Link>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       ) : null}
 
       <ConfirmDialog

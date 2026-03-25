@@ -21,7 +21,10 @@ export default function VideoDetailPage() {
   const videoId = Number(rawId);
 
   const detailQuery = useVideoDetail(videoId);
-  const playbackQuery = useVideoPlayback(videoId, Boolean(detailQuery.data?.hls_ready));
+  const playbackQuery = useVideoPlayback(
+    videoId,
+    Boolean(detailQuery.data?.hls_ready),
+  );
 
   if (!Number.isFinite(videoId)) {
     return (
@@ -82,7 +85,7 @@ export default function VideoDetailPage() {
             {video.title}
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Review playback, processing state, and metadata in one place.
+            Review playback, current processing state, and all available metadata in one place.
           </p>
         </div>
 
@@ -115,11 +118,13 @@ export default function VideoDetailPage() {
       ) : null}
 
       <section className="space-y-3">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-slate-900">Playback</h2>
-          {video.status === 'ready' ? (
-            <span className="text-sm text-slate-500">Available when processing is complete</span>
-          ) : null}
+          <span className="text-sm text-slate-500">
+            {video.status === 'ready'
+              ? 'Playback is ready.'
+              : 'Playback will appear when processing finishes.'}
+          </span>
         </div>
 
         {isPlayable ? (

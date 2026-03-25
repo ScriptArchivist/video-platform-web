@@ -22,13 +22,13 @@ export function VideoFilters({
   onReset,
 }: Props) {
   return (
-    <div className="space-y-3 rounded-xl border bg-white p-4">
+    <div className="space-y-4 rounded-xl border bg-white p-6">
       <div className="flex flex-wrap items-center gap-3">
         <input
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search videos..."
-          className="h-10 min-w-[260px] flex-1 rounded-md border px-3 text-sm"
+          className="h-10 min-w-[260px] flex-1 rounded-md border border-slate-200 px-3 text-sm text-slate-900 outline-none focus:border-slate-400"
         />
 
         <select
@@ -38,7 +38,7 @@ export function VideoFilters({
               (e.target.value || undefined) as VideoVisibility | undefined,
             )
           }
-          className="h-10 rounded-md border px-3 text-sm"
+          className="h-10 rounded-md border border-slate-200 px-3 text-sm text-slate-900 outline-none focus:border-slate-400"
         >
           <option value="">All visibility</option>
           <option value="private">private</option>
@@ -48,8 +48,9 @@ export function VideoFilters({
 
         {showReset && (
           <button
+            type="button"
             onClick={onReset}
-            className="h-10 rounded-md border px-3 text-sm"
+            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             Reset
           </button>

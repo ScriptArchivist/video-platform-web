@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useVideosList } from '@/features/videos/hooks/useVideosList';
@@ -48,7 +49,6 @@ export default function VideosPage() {
   );
   const [page, setPage] = useState(initialPage);
 
-  // debounce search
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(searchInput);
@@ -58,7 +58,6 @@ export default function VideosPage() {
     return () => clearTimeout(timeout);
   }, [searchInput]);
 
-  // URL sync
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -84,7 +83,6 @@ export default function VideosPage() {
   );
 
   const videosQuery = useVideosList(params);
-
   const hasFilters = Boolean(search || visibility);
 
   useEffect(() => {
@@ -95,61 +93,88 @@ export default function VideosPage() {
   }, [videosQuery.data, page]);
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Videos</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Просмотр загруженных видео.
-        </p>
+    <div className="max-w-6xl space-y-6 p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Videos
+          </h1>
+          <p className="mt-2 text-sm text-slate-500">
+            Browse uploaded videos, filter the catalog, and open a video for playback or editing.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/videos/new"
+            className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
+          >
+            Upload video
+          </Link>
+        </div>
       </div>
 
-      <VideoFilters
-        search={searchInput}
-        visibility={visibility}
-        onSearchChange={setSearchInput}
-        onVisibilityChange={(value) => {
-          setVisibility(value);
-          setPage(1);
-        }}
-        onReset={() => {
-          setSearchInput('');
-          setSearch('');
-          setVisibility(undefined);
-          setPage(1);
-        }}
-        showReset={hasFilters}
-        total={videosQuery.data?.total}
-      />
-
-      {videosQuery.isLoading && !videosQuery.data && (
-        <PageLoadingState title="Загрузка видео" />
-      )}
-
-      {videosQuery.isError && (
-        <PageErrorState
-          title="Ошибка загрузки"
-          description={parseApiError(videosQuery.error)}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Filters</h2>
+        <VideoFilters
+          search={searchInput}
+          visibility={visibility}
+          onSearchChange={setSearchInput}
+          onVisibilityChange={(value) => {
+            setVisibility(value);
+            setPage(1);
+          }}
+          onReset={() => {
+            setSearchInput('');
+            setSearch('');
+            setVisibility(undefined);
+            setPage(1);
+          }}
+          showReset={hasFilters}
+          total={videosQuery.data?.total}
         />
-      )}
+      </section>
 
-      {videosQuery.data && videosQuery.data.items.length === 0 && (
-        <PageEmptyState
-          title={hasFilters ? 'Ничего не найдено' : 'Видео отсутствуют'}
-        />
-      )}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Results</h2>
 
-      {videosQuery.data && videosQuery.data.items.length > 0 && (
-        <div className={videosQuery.isFetching ? 'opacity-60' : ''}>
-          <VideosTable items={videosQuery.data.items} />
+        {videosQuery.isLoading && !videosQuery.data && (
+          <PageLoadingState title="Loading videos" description="Fetching the current video list." />
+        )}
 
-          <PaginationControls
-            page={videosQuery.data.page}
-            perPage={videosQuery.data.per_page}
-            total={videosQuery.data.total}
-            onPageChange={setPage}
+        {videosQuery.isError && (
+          <PageErrorState
+            title="Failed to load videos"
+            description={parseApiError(videosQuery.error)}
           />
-        </div>
-      )}
+        )}
+
+        {videosQuery.data && videosQuery.data.items.length === 0 && (
+          <PageEmptyState
+            title={hasFilters ? 'No videos found' : 'No videos yet'}
+            description={
+              hasFilters
+                ? 'Try changing the search query or visibility filter.'
+                : 'Upload the first video to start filling the catalog.'
+            }
+          />
+        )}
+
+        {videosQuery.data && videosQuery.data.items.length > 0 && (
+          <div className={`space-y-4 ${videosQuery.isFetching ? 'opacity-60' : ''}`}>
+            <VideosTable items={videosQuery.data.items} />
+
+            <div className="rounded-xl border bg-white p-4">
+              <PaginationControls
+                page={videosQuery.data.page}
+                perPage={videosQuery.data.per_page}
+                total={videosQuery.data.total}
+                onPageChange={setPage}
+              />
+            </div>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
