@@ -9,37 +9,33 @@ interface LivePlayerPanelProps {
 export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [playbackError, setPlaybackError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     let isDisposed = false;
-    let hlsInstance: {
-      destroy: () => void;
-      loadSource: (url: string) => void;
-      attachMedia: (media: HTMLMediaElement) => void;
-      on: (event: string, handler: (...args: unknown[]) => void) => void;
-    } | null = null;
+    let hlsInstance: any = null;
 
     setPlaybackError(null);
+    setIsLoading(true);
 
     video.pause();
     video.removeAttribute('src');
     video.load();
 
-    const tryPlay = async () => {
+    const handleReady = async () => {
+      setIsLoading(false);
       try {
         await video.play();
-      } catch {
-        // autoplay may be blocked by browser
-      }
+      } catch {}
     };
 
     const init = async () => {
       if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = src;
-        await tryPlay();
+        video.onloadeddata = handleReady;
         return;
       }
 
@@ -63,18 +59,16 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         hls.loadSource(src);
         hls.attachMedia(video);
 
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          void tryPlay();
-        });
+        hls.on(Hls.Events.MANIFEST_PARSED, handleReady);
 
         hls.on(Hls.Events.ERROR, (_event, data) => {
           if (data?.fatal) {
-            setPlaybackError('Failed to load live stream in browser.');
+            setPlaybackError('Failed to load live stream.');
           }
         });
       } catch {
         if (!isDisposed) {
-          setPlaybackError('Failed to initialize live player.');
+          setPlaybackError('Failed to initialize player.');
         }
       }
     };
@@ -91,20 +85,26 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
 
   return (
     <div className="overflow-hidden rounded-xl border bg-black">
+      {isLoading && (
+        <div className="flex aspect-video items-center justify-center text-sm text-slate-400">
+          Loading stream...
+        </div>
+      )}
+
       <video
         ref={videoRef}
         controls
         autoPlay
         playsInline
         muted
-        className="aspect-video w-full"
+        className={`aspect-video w-full ${isLoading ? 'hidden' : ''}`}
       />
 
-      {playbackError ? (
+      {playbackError && (
         <div className="border-t border-slate-800 bg-white p-4 text-sm text-red-700">
           {playbackError}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

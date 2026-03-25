@@ -108,15 +108,23 @@ export default function WatchLivePage() {
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Playback</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900">Playback</h2>
+
+          <span className="text-sm text-slate-500">
+            {session.status === 'started'
+              ? 'Live now'
+              : 'Waiting for stream'}
+          </span>
+        </div>
 
         {hlsUrl ? (
           <LivePlayerPanel src={hlsUrl} />
         ) : (
           <div className="rounded-xl border bg-white p-6 text-sm text-slate-500">
             {isLive
-              ? 'Stream is starting. HLS playback will appear in a few seconds.'
-              : 'This stream is not currently live.'}
+              ? 'Stream is starting. Please wait...'
+              : 'Stream is offline'}
           </div>
         )}
       </section>

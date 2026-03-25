@@ -142,53 +142,57 @@ export default function LiveStudioPage() {
         </form>
       </section>
 
+// ЗАМЕНИ ТОЛЬКО БЛОК session section
+
       {currentSession && sessionMeta ? (
         <section className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-900">Session info</h2>
+            <h2 className="text-lg font-semibold text-slate-900">
+              Live session
+            </h2>
             <LiveStatusBadge status={currentSession.status} />
           </div>
 
-          <div className="rounded-xl border bg-white p-6">
-            <dl className="space-y-4 text-sm">
+          <div className="rounded-xl border bg-white p-6 space-y-4">
+            <div className="text-sm text-slate-500">
+              {currentSession.status === 'created' && 'Waiting for stream to start'}
+              {currentSession.status === 'started' && 'Stream is live'}
+              {currentSession.status === 'stopped' && 'Stream has stopped'}
+              {currentSession.status === 'expired' && 'Stream expired'}
+              {currentSession.status === 'error' && 'Stream failed'}
+            </div>
+
+            <dl className="space-y-3 text-sm">
               <div>
-                <dt className="mb-1 text-slate-500">Stream key</dt>
+                <dt className="text-slate-500">RTMP URL</dt>
                 <dd className="break-all text-slate-900">
-                  {currentSession.stream_key}
+                  {sessionMeta.rtmp_url}
                 </dd>
               </div>
 
               <div>
-                <dt className="mb-1 text-slate-500">RTMP URL</dt>
-                <dd className="break-all text-slate-900">{sessionMeta.rtmp_url}</dd>
-              </div>
-
-              <div>
-                <dt className="mb-1 text-slate-500">HLS URL</dt>
+                <dt className="text-slate-500">HLS URL</dt>
                 <dd className="break-all text-slate-900">
-                  {effectiveHlsUrl ?? '—'}
+                  {effectiveHlsUrl ?? 'Not ready yet'}
                 </dd>
               </div>
             </dl>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
+            <div className="flex flex-wrap gap-3 border-t pt-4">
               <button
                 type="button"
                 disabled={stopMutation.isPending}
-                onClick={() => {
-                  setSubmitError(null);
-                  setIsStopDialogOpen(true);
-                }}
-                className="inline-flex h-10 items-center rounded-md border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+                onClick={() => setIsStopDialogOpen(true)}
+                className="inline-flex h-10 items-center rounded-md border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50"
               >
                 {stopMutation.isPending ? 'Stopping...' : 'Stop live'}
               </button>
 
               <Link
                 href={`/watch/live/${currentSession.stream_key}`}
-                className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
-                Open watch page
+                Open player
               </Link>
             </div>
           </div>

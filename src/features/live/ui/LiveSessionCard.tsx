@@ -42,7 +42,11 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
       </div>
 
       <p className="mt-3 text-sm text-slate-500">
-        {session.hls_ready ? 'Playback is ready.' : 'Stream is starting...'}
+        {session.status === 'started'
+          ? 'Live now'
+          : session.hls_ready
+          ? 'Ready to watch'
+          : 'Starting stream...'}
       </p>
 
       <div className="mt-auto pt-4">
