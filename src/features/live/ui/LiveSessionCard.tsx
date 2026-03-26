@@ -13,14 +13,45 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
 
   const isStarted = status === 'started';
   const hasPlayback = Boolean(session.hls_url);
-
-  // 👉 главное правило:
-  // если стрим started — всегда разрешаем открыть
+  const isReady = hasPlayback;
   const canWatch = Boolean(isStarted || hasPlayback);
+
+  function getStatusText() {
+    if (isStarted && hasPlayback) {
+      return 'Live now • Playback available';
+    }
+
+    if (isStarted && !hasPlayback) {
+      return 'Live now • Preparing playback...';
+    }
+
+    if (!isStarted && hasPlayback) {
+      return 'Playback ready';
+    }
+
+    return 'Waiting for stream';
+  }
+
+  function getDescription() {
+    if (isStarted && hasPlayback) {
+      return 'The stream is live and ready to watch.';
+    }
+
+    if (isStarted && !hasPlayback) {
+      return 'The stream has started, but playback is still initializing. This usually takes a few seconds.';
+    }
+
+    if (!isStarted && hasPlayback) {
+      return 'Playback is ready. You can open the stream.';
+    }
+
+    return 'The streamer has not started broadcasting yet.';
+  }
 
   return (
     <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+      {/* Thumbnail */}
+      <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
         <div className="aspect-video w-full">
           {session.thumbnail_url ? (
             <img
@@ -34,8 +65,17 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
             </div>
           )}
         </div>
+
+        {/* 🔴 LIVE overlay */}
+        {isStarted ? (
+          <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+            LIVE
+          </div>
+        ) : null}
       </div>
 
+      {/* Title + status */}
       <div className="mt-5 flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-1">
           <h3 className="line-clamp-2 text-base font-semibold leading-6 text-slate-900">
@@ -46,26 +86,25 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
           </p>
         </div>
 
-        {/* безопасно приводим статус */}
         <LiveStatusBadge status={status as any} />
       </div>
 
-      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+      {/* Status explanation */}
+      <div className="mt-4 space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className="text-sm font-medium text-slate-900">
+          {getStatusText()}
+        </div>
+
         <p className="text-sm leading-6 text-slate-600">
-          {isStarted
-            ? hasPlayback
-              ? 'The stream is live and playback is available.'
-              : 'The stream is live. Playback is starting and may appear shortly.'
-            : hasPlayback
-              ? 'Playback is ready and the watch page can be opened.'
-              : 'The stream is being prepared. Playback may appear with a short delay.'}
+          {getDescription()}
         </p>
       </div>
 
+      {/* CTA */}
       <div className="mt-auto pt-5">
         <Link
           href={`/watch/live/${session.stream_key}`}
-          className={`inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition ${
+          className={`inline-flex h-10 w-full items-center justify-center rounded-xl px-4 text-sm font-medium transition ${
             canWatch
               ? 'bg-slate-900 text-white hover:bg-slate-800'
               : 'cursor-not-allowed border border-slate-200 bg-white text-slate-400'
@@ -77,7 +116,7 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
             }
           }}
         >
-          Watch
+          {canWatch ? 'Watch stream' : 'Not available yet'}
         </Link>
       </div>
     </article>
