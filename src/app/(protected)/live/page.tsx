@@ -209,46 +209,40 @@ export default function LiveStudioPage() {
           </div>
 
           <div className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-sm text-slate-500">
-              {currentSession.status === 'created' &&
-                'Waiting for stream to start'}
-              {currentSession.status === 'started' && 'Stream is live'}
-              {currentSession.status === 'stopped' && 'Stream has been stopped'}
-              {currentSession.status === 'expired' && 'Stream expired'}
-              {currentSession.status === 'error' && 'Stream failed'}
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm leading-6 text-slate-600">
+                {currentSession.status === 'created' &&
+                  'Waiting for the stream to start. Begin sending RTMP from your encoder to make the session live.'}
+                {currentSession.status === 'started' &&
+                  'The stream is currently live. Viewers can open the watch page and playback should be available.'}
+                {currentSession.status === 'stopped' &&
+                  'The live session has been stopped and is no longer broadcasting.'}
+                {currentSession.status === 'expired' &&
+                  'The live session expired before the stream was completed.'}
+                {currentSession.status === 'error' &&
+                  'The live session failed. Check the encoder connection and stream settings.'}
+              </p>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-              {currentSession.status === 'created' && (
-                <p>Stream is created. Start sending RTMP to begin live.</p>
-              )}
-              {currentSession.status === 'started' && (
-                <p>Stream is live. Viewers can watch it now.</p>
-              )}
-              {currentSession.status === 'stopped' && (
-                <p>Stream has been stopped.</p>
-              )}
-              {currentSession.status === 'expired' && <p>Stream expired.</p>}
-              {currentSession.status === 'error' && (
-                <p>Stream failed. Please check your encoder or settings.</p>
-              )}
-            </div>
-
-            <dl className="space-y-4 text-sm">
-              <div>
-                <dt className="mb-1 text-slate-500">RTMP URL</dt>
-                <dd className="break-all text-slate-900">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  RTMP URL
+                </div>
+                <div className="mt-2 break-all text-sm leading-6 text-slate-900">
                   {sessionMeta.rtmp_url}
-                </dd>
+                </div>
               </div>
 
-              <div>
-                <dt className="mb-1 text-slate-500">HLS URL</dt>
-                <dd className="break-all text-slate-900">
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  HLS URL
+                </div>
+                <div className="mt-2 break-all text-sm leading-6 text-slate-900">
                   {effectiveHlsUrl ?? 'Not ready yet'}
-                </dd>
+                </div>
               </div>
-            </dl>
+            </div>
 
             <div className="flex flex-wrap gap-3 border-t border-slate-100 pt-4">
               <button

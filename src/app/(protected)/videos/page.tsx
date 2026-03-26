@@ -94,7 +94,7 @@ export default function VideosPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Videos
@@ -113,7 +113,7 @@ export default function VideosPage() {
             Upload video
           </Link>
         </div>
-      </div>
+      </header>
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold tracking-tight text-slate-900">
@@ -146,21 +146,21 @@ export default function VideosPage() {
           Results
         </h2>
 
-        {videosQuery.isLoading && !videosQuery.data && (
+        {videosQuery.isLoading && !videosQuery.data ? (
           <PageLoadingState
             title="Loading videos"
             description="Fetching the current video list."
           />
-        )}
+        ) : null}
 
-        {videosQuery.isError && (
+        {videosQuery.isError ? (
           <PageErrorState
             title="Failed to load videos"
             description={parseApiError(videosQuery.error)}
           />
-        )}
+        ) : null}
 
-        {videosQuery.data && videosQuery.data.items.length === 0 && (
+        {videosQuery.data && videosQuery.data.items.length === 0 ? (
           <PageEmptyState
             title={hasFilters ? 'No videos found' : 'No videos yet'}
             description={
@@ -169,9 +169,9 @@ export default function VideosPage() {
                 : 'Upload the first video to start filling the catalog.'
             }
           />
-        )}
+        ) : null}
 
-        {videosQuery.data && videosQuery.data.items.length > 0 && (
+        {videosQuery.data && videosQuery.data.items.length > 0 ? (
           <div className={`space-y-4 ${videosQuery.isFetching ? 'opacity-60' : ''}`}>
             <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               <VideosTable items={videosQuery.data.items} />
@@ -186,7 +186,7 @@ export default function VideosPage() {
               />
             </div>
           </div>
-        )}
+        ) : null}
       </section>
     </div>
   );

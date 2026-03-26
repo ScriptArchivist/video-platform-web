@@ -19,7 +19,7 @@ const statusClassMap: Record<VideoStatus, string> = {
 export function VideoStatusBadge({ status }: { status: VideoStatus }) {
   return (
     <span
-      className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${statusClassMap[status]}`}
+      className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${statusClassMap[status]}`}
     >
       {statusLabelMap[status]}
     </span>

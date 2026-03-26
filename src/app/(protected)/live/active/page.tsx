@@ -15,7 +15,7 @@ export default function ActiveLiveSessionsPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Active live sessions
@@ -34,26 +34,26 @@ export default function ActiveLiveSessionsPage() {
             Open live studio
           </Link>
         </div>
-      </div>
+      </header>
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold tracking-tight text-slate-900">
           Sessions
         </h2>
 
-        {activeQuery.isLoading && (
+        {activeQuery.isLoading ? (
           <PageLoadingState
             title="Loading active live sessions"
             description="Fetching live sessions from backend."
           />
-        )}
+        ) : null}
 
-        {activeQuery.isError && (
+        {activeQuery.isError ? (
           <PageErrorState
             title="Failed to load active live sessions"
             description={parseApiError(activeQuery.error)}
           />
-        )}
+        ) : null}
 
         {!activeQuery.isLoading &&
         !activeQuery.isError &&

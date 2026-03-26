@@ -78,7 +78,7 @@ export default function VideoDetailPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <p className="text-sm text-slate-500">Video #{video.id}</p>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
@@ -107,7 +107,7 @@ export default function VideoDetailPage() {
 
           <DeleteVideoButton videoId={video.id} />
         </div>
-      </div>
+      </header>
 
       {video.status === 'failed' ? (
         <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">

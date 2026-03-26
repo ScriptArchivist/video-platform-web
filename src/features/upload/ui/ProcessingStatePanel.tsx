@@ -22,23 +22,35 @@ export function ProcessingStatePanel({
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-3 flex items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          Processing state
-        </h2>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <h3 className="text-base font-semibold text-slate-900">
+            Processing state
+          </h3>
+          <p className="mt-1 text-sm text-slate-500">
+            Current backend status for this video.
+          </p>
+        </div>
+
         <VideoStatusBadge status={status} />
       </div>
 
-      {isFailed ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-          <p className="font-medium">Processing failed</p>
-          <p className="mt-1">{errorMessage ?? 'Processing failed.'}</p>
-        </div>
-      ) : (
-        <p className="text-sm leading-6 text-slate-500">
-          {statusDescriptionMap[status]}
-        </p>
-      )}
+      <div className="mt-5">
+        {isFailed ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <p className="font-medium">Processing failed</p>
+            <p className="mt-1 leading-6">
+              {errorMessage ?? 'Processing failed.'}
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+            <p className="text-sm leading-6 text-slate-600">
+              {statusDescriptionMap[status]}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

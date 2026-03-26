@@ -57,42 +57,49 @@ export function VideosTable({ items }: VideosTableProps) {
             href={`/videos/${video.id}`}
             className="flex h-full"
           >
-            <article className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 hover:shadow-sm">
-              <div className="relative h-[200px] w-full shrink-0 overflow-hidden bg-slate-200">
-                {video.thumbnail_url ? (
-                  <img
-                    src={video.thumbnail_url}
-                    alt={video.title}
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">
-                    No preview
-                  </div>
-                )}
+            <article className="flex h-full w-full flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md">
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                <div className="relative h-[200px] w-full shrink-0 overflow-hidden bg-slate-200">
+                  {video.thumbnail_url ? (
+                    <img
+                      src={video.thumbnail_url}
+                      alt={video.title}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">
+                      No preview
+                    </div>
+                  )}
 
-                {duration && (
-                  <div className="absolute bottom-2 right-2 rounded-lg bg-black/80 px-2 py-1 text-xs font-medium text-white">
-                    {duration}
-                  </div>
-                )}
+                  {duration && (
+                    <div className="absolute bottom-3 right-3 rounded-lg bg-black/80 px-2 py-1 text-xs font-medium text-white">
+                      {duration}
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="flex flex-1 flex-col p-4">
-                <div className="line-clamp-2 min-h-[40px] text-sm font-semibold leading-5 text-slate-900">
-                  {video.title}
+              <div className="mt-4 flex flex-1 flex-col">
+                <div className="space-y-1">
+                  <div className="line-clamp-2 min-h-[48px] text-base font-semibold leading-6 text-slate-900">
+                    {video.title}
+                  </div>
+
+                  <div className="text-sm text-slate-600">{creatorName}</div>
+
+                  <div className="text-xs text-slate-500">
+                    {formatUploadedAt(video.uploaded_at)}
+                  </div>
                 </div>
 
-                <div className="mt-2 text-sm text-slate-600">
-                  {creatorName}
-                </div>
-
-                <div className="mt-1 text-xs text-slate-500">
-                  {formatUploadedAt(video.uploaded_at)}
-                </div>
-
-                <div className="mt-auto pt-4">
-                  <VisibilityBadge visibility={video.visibility} />
+                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Visibility
+                  </div>
+                  <div className="mt-2">
+                    <VisibilityBadge visibility={video.visibility} />
+                  </div>
                 </div>
               </div>
             </article>

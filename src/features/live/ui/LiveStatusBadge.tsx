@@ -19,7 +19,7 @@ const statusClassMap: Record<LiveStatus, string> = {
 export function LiveStatusBadge({ status }: { status: LiveStatus }) {
   return (
     <span
-      className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${statusClassMap[status]}`}
+      className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${statusClassMap[status]}`}
     >
       {statusLabelMap[status]}
     </span>
