@@ -9,7 +9,8 @@ interface LiveSessionCardProps {
 }
 
 export function LiveSessionCard({ session }: LiveSessionCardProps) {
-  const canWatch = Boolean(session.hls_ready && session.hls_url);
+  const isStarted = session.status === 'started';
+  const canWatch = Boolean(isStarted || session.hls_ready || session.hls_url);
 
   return (
     <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -39,13 +40,15 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
           </p>
         </div>
 
-        <LiveStatusBadge status={session.status} />
+        <LiveStatusBadge status={session.status as any} />
       </div>
 
       <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
         <p className="text-sm leading-6 text-slate-600">
-          {session.status === 'started'
-            ? 'The stream is currently live and available for viewers.'
+          {isStarted
+            ? session.hls_ready || session.hls_url
+              ? 'The stream is live and playback is available.'
+              : 'The stream is live. Playback is still warming up and may appear with a short delay.'
             : session.hls_ready
               ? 'Playback is ready and the watch page can be opened.'
               : 'The stream is being prepared. Playback may appear with a short delay.'}

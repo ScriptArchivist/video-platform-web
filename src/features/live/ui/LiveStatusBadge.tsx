@@ -1,11 +1,11 @@
 import type { LiveStatus } from '../types';
 
 const statusLabelMap: Record<LiveStatus, string> = {
-  created: 'Ready to start',
-  started: 'Live',
+  created: 'Waiting for stream',
+  started: 'Live now',
   stopped: 'Stopped',
   expired: 'Expired',
-  error: 'Error',
+  error: 'Stream error',
 };
 
 const statusClassMap: Record<LiveStatus, string> = {

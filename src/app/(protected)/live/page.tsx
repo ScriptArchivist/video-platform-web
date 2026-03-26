@@ -92,26 +92,88 @@ export default function LiveStudioPage() {
     sessionMeta?.hls_url ??
     null;
 
-  const statusDescription = useMemo(() => {
+  const sessionGuide = useMemo(() => {
     if (!currentSession) return null;
 
     if (currentSession.status === 'created') {
-      return 'Session is ready. Copy the RTMP URL and stream key into OBS, then start streaming.';
+      return {
+        title: 'Session created',
+        description:
+          'Your live session is ready. Copy the RTMP URL and stream key into OBS, then click Start Streaming in OBS.',
+        nextStep: 'Next step: open OBS and start streaming.',
+        toneClass: 'border-blue-200 bg-blue-50',
+      };
     }
 
     if (currentSession.status === 'started') {
-      return 'The stream is live. You can monitor playback below and open the public watch page.';
+      return {
+        title: 'Stream is live',
+        description:
+          'The platform is receiving your stream. You can preview playback below or open the public watch page.',
+        nextStep: 'Next step: monitor playback or open the player page.',
+        toneClass: 'border-red-200 bg-red-50',
+      };
     }
 
     if (currentSession.status === 'stopped') {
-      return 'The live session has been stopped and is no longer broadcasting.';
+      return {
+        title: 'Stream stopped',
+        description:
+          'This live session has been stopped and is no longer broadcasting.',
+        nextStep: 'Next step: create a new session when you are ready to go live again.',
+        toneClass: 'border-slate-200 bg-slate-50',
+      };
     }
 
     if (currentSession.status === 'expired') {
-      return 'The session expired before streaming was completed.';
+      return {
+        title: 'Session expired',
+        description:
+          'The session expired before streaming was completed.',
+        nextStep: 'Next step: create a new session and reconnect OBS.',
+        toneClass: 'border-amber-200 bg-amber-50',
+      };
     }
 
-    return 'The live session failed. Check encoder settings and connection details.';
+    return {
+      title: 'Streaming error',
+      description:
+        'The live session failed. Check the encoder settings and connection details in OBS.',
+      nextStep: 'Next step: verify RTMP settings and try again.',
+      toneClass: 'border-red-200 bg-red-50',
+    };
+  }, [currentSession]);
+
+  const steps = useMemo(() => {
+    const hasSession = Boolean(currentSession);
+
+    return [
+      {
+        title: 'Create session',
+        description: 'Generate RTMP credentials for this live stream',
+        icon: Radio,
+        isActive: !hasSession,
+        isDone: hasSession,
+      },
+      {
+        title: 'Set up OBS',
+        description: 'Paste RTMP URL and stream key into OBS',
+        icon: Video,
+        isActive: currentSession?.status === 'created',
+        isDone:
+          currentSession?.status === 'started' ||
+          currentSession?.status === 'stopped' ||
+          currentSession?.status === 'expired' ||
+          currentSession?.status === 'error',
+      },
+      {
+        title: 'Go live and monitor',
+        description: 'Start streaming and verify playback here',
+        icon: Wifi,
+        isActive: currentSession?.status === 'started',
+        isDone: currentSession?.status === 'stopped',
+      },
+    ];
   }, [currentSession]);
 
   const canShowPlayer =
@@ -167,7 +229,7 @@ export default function LiveStudioPage() {
         <div className="min-w-0 space-y-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
             <Radio className="h-3.5 w-3.5" />
-            Feature showcase
+            Live workflow
           </div>
 
           <div>
@@ -191,53 +253,47 @@ export default function LiveStudioPage() {
       </header>
 
       <section className="grid gap-3 md:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-              <Radio className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-slate-900">
-                1. Create session
-              </div>
-              <div className="text-sm text-slate-500">
-                Generate RTMP data for the stream
-              </div>
-            </div>
-          </div>
-        </div>
+        {steps.map((step, index) => {
+          const Icon = step.icon;
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-              <Video className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-slate-900">
-                2. Start OBS
-              </div>
-              <div className="text-sm text-slate-500">
-                Paste RTMP URL and stream key
-              </div>
-            </div>
-          </div>
-        </div>
+          return (
+            <div
+              key={step.title}
+              className={`rounded-2xl border bg-white p-4 shadow-sm transition ${
+                step.isActive
+                  ? 'border-slate-900 ring-1 ring-slate-900/10'
+                  : 'border-slate-200'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                    step.isDone
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : step.isActive
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  {step.isDone ? (
+                    <Check className="h-5 w-5" />
+                  ) : (
+                    <Icon className="h-5 w-5" />
+                  )}
+                </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-              <Wifi className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-slate-900">
-                3. Monitor stream
-              </div>
-              <div className="text-sm text-slate-500">
-                Check status and playback here
+                <div>
+                  <div className="text-sm font-semibold text-slate-900">
+                    {index + 1}. {step.title}
+                  </div>
+                  <div className="text-sm text-slate-500">
+                    {step.description}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -326,7 +382,7 @@ export default function LiveStudioPage() {
         />
       ) : null}
 
-      {currentSession && sessionMeta ? (
+      {currentSession && sessionMeta && sessionGuide ? (
         <section className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -334,21 +390,29 @@ export default function LiveStudioPage() {
                 Live session
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                Everything needed to launch and monitor the stream.
+                Session details, current status, and the next action.
               </p>
             </div>
 
             <LiveStatusBadge status={currentSession.status} />
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <p className="text-sm leading-6 text-slate-700">
-                {statusDescription}
-              </p>
+          <div
+            className={`rounded-2xl border p-5 ${sessionGuide.toneClass}`}
+          >
+            <h3 className="text-sm font-semibold text-slate-900">
+              What to do now
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              {sessionGuide.description}
+            </p>
+            <div className="mt-3 text-sm font-medium text-slate-900">
+              {sessionGuide.nextStep}
             </div>
+          </div>
 
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="grid gap-4 lg:grid-cols-2">
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -356,7 +420,7 @@ export default function LiveStudioPage() {
                       RTMP URL
                     </div>
                     <p className="mt-1 text-sm text-slate-500">
-                      Paste into OBS as the server URL
+                      Paste into OBS as the Server value
                     </p>
                   </div>
                   <CopyButton value={sessionMeta.rtmp_url} copyKey="rtmp_url" />
@@ -374,7 +438,7 @@ export default function LiveStudioPage() {
                       Stream key
                     </div>
                     <p className="mt-1 text-sm text-slate-500">
-                      Paste into OBS as the stream key
+                      Paste into OBS as the Stream Key
                     </p>
                   </div>
                   <CopyButton
