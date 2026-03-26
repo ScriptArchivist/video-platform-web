@@ -1,7 +1,7 @@
 import type { LiveStatus } from '../types';
 
 const statusLabelMap: Record<LiveStatus, string> = {
-  created: 'Preparing',
+  created: 'Ready to start',
   started: 'Live',
   stopped: 'Stopped',
   expired: 'Expired',
@@ -16,11 +16,24 @@ const statusClassMap: Record<LiveStatus, string> = {
   error: 'border-red-200 bg-red-50 text-red-700',
 };
 
+const dotClassMap: Record<LiveStatus, string> = {
+  created: 'bg-blue-500',
+  started: 'bg-red-500',
+  stopped: 'bg-slate-400',
+  expired: 'bg-amber-500',
+  error: 'bg-red-500',
+};
+
 export function LiveStatusBadge({ status }: { status: LiveStatus }) {
   return (
     <span
-      className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${statusClassMap[status]}`}
+      className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${statusClassMap[status]}`}
     >
+      <span
+        className={`h-2 w-2 rounded-full ${dotClassMap[status]} ${
+          status === 'started' ? 'animate-pulse' : ''
+        }`}
+      />
       {statusLabelMap[status]}
     </span>
   );

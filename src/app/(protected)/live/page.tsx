@@ -1,18 +1,29 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Check,
+  Copy,
+  ExternalLink,
+  Radio,
+  Square,
+  Video,
+  Wifi,
+} from 'lucide-react';
+
 import { useCreateLiveSession } from '@/features/live/hooks/useCreateLiveSession';
 import { useLiveSession } from '@/features/live/hooks/useLiveSession';
 import { useStopLiveSession } from '@/features/live/hooks/useStopLiveSession';
+import { LivePlayerPanel } from '@/features/live/ui/LivePlayerPanel';
 import { LiveStatusBadge } from '@/features/live/ui/LiveStatusBadge';
 import { parseApiError } from '@/shared/api/client';
-import { useToast } from '@/shared/ui/toast/ToastProvider';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { PageErrorState } from '@/shared/ui/PageState';
+import { useToast } from '@/shared/ui/toast/ToastProvider';
 
 const schema = z.object({
   title: z.string().optional(),
@@ -23,6 +34,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LiveStudioPage() {
   const { showSuccess, showError } = useToast();
+
   const [createdStreamKey, setCreatedStreamKey] = useState<string | null>(null);
   const [sessionMeta, setSessionMeta] = useState<{
     rtmp_url: string;
@@ -31,6 +43,7 @@ export default function LiveStudioPage() {
   } | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
+  const [copiedValue, setCopiedValue] = useState<string | null>(null);
 
   const createMutation = useCreateLiveSession();
   const sessionQuery = useLiveSession(createdStreamKey);
@@ -55,12 +68,13 @@ export default function LiveStudioPage() {
       });
 
       setCreatedStreamKey(response.session.stream_key);
-      showSuccess('Live session created');
       setSessionMeta({
         rtmp_url: response.rtmp_url,
         hls_url: response.hls_url,
         thumbnail_url: response.thumbnail_url,
       });
+
+      showSuccess('Live session created');
     } catch (error) {
       const msg = parseApiError(error);
       setSubmitError(msg);
@@ -69,6 +83,7 @@ export default function LiveStudioPage() {
   });
 
   const currentSession = sessionQuery.data;
+
   const effectiveHlsUrl =
     currentSession?.hls_url ??
     (currentSession?.thumbnail_url?.endsWith('/thumb.jpg')
@@ -77,50 +92,165 @@ export default function LiveStudioPage() {
     sessionMeta?.hls_url ??
     null;
 
+  const statusDescription = useMemo(() => {
+    if (!currentSession) return null;
+
+    if (currentSession.status === 'created') {
+      return 'Session is ready. Copy the RTMP URL and stream key into OBS, then start streaming.';
+    }
+
+    if (currentSession.status === 'started') {
+      return 'The stream is live. You can monitor playback below and open the public watch page.';
+    }
+
+    if (currentSession.status === 'stopped') {
+      return 'The live session has been stopped and is no longer broadcasting.';
+    }
+
+    if (currentSession.status === 'expired') {
+      return 'The session expired before streaming was completed.';
+    }
+
+    return 'The live session failed. Check encoder settings and connection details.';
+  }, [currentSession]);
+
+  const canShowPlayer =
+    currentSession?.status === 'started' && Boolean(effectiveHlsUrl);
+
+  async function handleCopy(value: string, key: string) {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedValue(key);
+      showSuccess('Copied to clipboard');
+
+      window.setTimeout(() => {
+        setCopiedValue((current) => (current === key ? null : current));
+      }, 1500);
+    } catch {
+      showError('Failed to copy');
+    }
+  }
+
+  function CopyButton({
+    value,
+    copyKey,
+  }: {
+    value: string;
+    copyKey: string;
+  }) {
+    const copied = copiedValue === copyKey;
+
+    return (
+      <button
+        type="button"
+        onClick={() => handleCopy(value, copyKey)}
+        className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+      >
+        {copied ? (
+          <>
+            <Check className="h-4 w-4" />
+            Copied
+          </>
+        ) : (
+          <>
+            <Copy className="h-4 w-4" />
+            Copy
+          </>
+        )}
+      </button>
+    );
+  }
+
   return (
-    <div className="max-w-6xl space-y-6 p-6">
-      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Live studio
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-slate-500">
-            Create a live session, get RTMP and HLS endpoints, and monitor the
-            stream status.
-          </p>
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+            <Radio className="h-3.5 w-3.5" />
+            Feature showcase
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Live Studio
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+              Create a session, copy the streaming credentials into OBS, start
+              broadcasting, and monitor the stream from one screen.
+            </p>
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href="/live/active"
-            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
-            Active sessions
-          </Link>
-        </div>
+        <Link
+          href="/live/active"
+          className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+        >
+          Active sessions
+          <ExternalLink className="h-4 w-4" />
+        </Link>
       </header>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          Notes
-        </h2>
+      <section className="grid gap-3 md:grid-cols-3">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+              <Radio className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-slate-900">
+                1. Create session
+              </div>
+              <div className="text-sm text-slate-500">
+                Generate RTMP data for the stream
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-sm leading-6 text-blue-800 shadow-sm">
-          After the stream starts, HLS may appear with a short delay while the
-          live output is initializing.
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+              <Video className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-slate-900">
+                2. Start OBS
+              </div>
+              <div className="text-sm text-slate-500">
+                Paste RTMP URL and stream key
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+              <Wifi className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-slate-900">
+                3. Monitor stream
+              </div>
+              <div className="text-sm text-slate-500">
+                Check status and playback here
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          Create session
-        </h2>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+            Create session
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Create a live session to receive RTMP credentials for OBS.
+          </p>
+        </div>
 
-        <form
-          onSubmit={onSubmit}
-          autoComplete="off"
-          className="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
+        <form onSubmit={onSubmit} autoComplete="off" className="space-y-5">
           <input
             type="text"
             name="prevent_autofill_username"
@@ -138,29 +268,33 @@ export default function LiveStudioPage() {
             aria-hidden="true"
           />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Title (optional)
-            </label>
-            <input
-              {...form.register('title')}
-              autoComplete="off"
-              disabled={createMutation.isPending}
-              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
-            />
-          </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">
+                Title (optional)
+              </label>
+              <input
+                {...form.register('title')}
+                autoComplete="off"
+                disabled={createMutation.isPending}
+                placeholder="My live stream"
+                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              />
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Stream key (optional)
-            </label>
-            <input
-              {...form.register('stream_key')}
-              autoComplete="off"
-              spellCheck={false}
-              disabled={createMutation.isPending}
-              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">
+                Stream key (optional)
+              </label>
+              <input
+                {...form.register('stream_key')}
+                autoComplete="off"
+                spellCheck={false}
+                disabled={createMutation.isPending}
+                placeholder="Leave empty to generate automatically"
+                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              />
+            </div>
           </div>
 
           {submitError ? (
@@ -173,103 +307,189 @@ export default function LiveStudioPage() {
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-11 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {createMutation.isPending ? 'Creating...' : 'Create live session'}
             </button>
 
             <span className="text-sm text-slate-500">
-              After creation, session details and next actions will appear
-              below.
+              Credentials and next steps will appear below after creation.
             </span>
           </div>
         </form>
       </section>
 
       {createdStreamKey && sessionQuery.isError ? (
-        <section className="space-y-3">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            State
-          </h2>
-
-          <PageErrorState
-            title="Failed to load live session"
-            description={parseApiError(sessionQuery.error)}
-          />
-        </section>
+        <PageErrorState
+          title="Failed to load live session"
+          description={parseApiError(sessionQuery.error)}
+        />
       ) : null}
 
       {currentSession && sessionMeta ? (
-        <section className="space-y-3">
+        <section className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-              Live session
-            </h2>
-            <LiveStatusBadge status={currentSession.status} />
-          </div>
-
-          <div className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <p className="text-sm leading-6 text-slate-600">
-                {currentSession.status === 'created' &&
-                  'Waiting for the stream to start. Begin sending RTMP from your encoder to make the session live.'}
-                {currentSession.status === 'started' &&
-                  'The stream is currently live. Viewers can open the watch page and playback should be available.'}
-                {currentSession.status === 'stopped' &&
-                  'The live session has been stopped and is no longer broadcasting.'}
-                {currentSession.status === 'expired' &&
-                  'The live session expired before the stream was completed.'}
-                {currentSession.status === 'error' &&
-                  'The live session failed. Check the encoder connection and stream settings.'}
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+                Live session
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Everything needed to launch and monitor the stream.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                  RTMP URL
+            <LiveStatusBadge status={currentSession.status} />
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm leading-6 text-slate-700">
+                {statusDescription}
+              </p>
+            </div>
+
+            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                      RTMP URL
+                    </div>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Paste into OBS as the server URL
+                    </p>
+                  </div>
+                  <CopyButton value={sessionMeta.rtmp_url} copyKey="rtmp_url" />
                 </div>
-                <div className="mt-2 break-all text-sm leading-6 text-slate-900">
+
+                <div className="mt-4 rounded-xl bg-slate-950 px-4 py-3 font-mono text-sm leading-6 text-slate-100 break-all">
                   {sessionMeta.rtmp_url}
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                  HLS URL
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                      Stream key
+                    </div>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Paste into OBS as the stream key
+                    </p>
+                  </div>
+                  <CopyButton
+                    value={currentSession.stream_key}
+                    copyKey="stream_key"
+                  />
                 </div>
-                <div className="mt-2 break-all text-sm leading-6 text-slate-900">
-                  {effectiveHlsUrl ?? 'Not ready yet'}
+
+                <div className="mt-4 rounded-xl bg-slate-950 px-4 py-3 font-mono text-sm leading-6 text-slate-100 break-all">
+                  {currentSession.stream_key}
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 border-t border-slate-100 pt-4">
-              <button
-                type="button"
-                disabled={stopMutation.isPending}
-                onClick={() => {
-                  setSubmitError(null);
-                  setIsStopDialogOpen(true);
-                }}
-                className="inline-flex h-10 items-center rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50"
-              >
-                {stopMutation.isPending ? 'Stopping...' : 'Stop'}
-              </button>
+            <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5">
+              <h3 className="text-sm font-semibold text-slate-900">
+                OBS setup
+              </h3>
+              <ol className="mt-3 space-y-2 text-sm leading-6 text-slate-700">
+                <li>1. Open OBS and go to Settings → Stream.</li>
+                <li>2. Set the custom server to the RTMP URL above.</li>
+                <li>3. Paste the stream key into the Stream Key field.</li>
+                <li>4. Save settings and click “Start Streaming” in OBS.</li>
+                <li>
+                  5. Return here to confirm the session becomes live and preview
+                  playback.
+                </li>
+              </ol>
+            </div>
 
-              <Link
-                href={`/watch/live/${currentSession.stream_key}`}
-                className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-              >
-                Open player
-              </Link>
+            <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-slate-200 bg-white">
+                  <div className="border-b border-slate-100 px-5 py-4">
+                    <h3 className="text-sm font-semibold text-slate-900">
+                      Stream preview
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Preview appears after the session starts and HLS becomes
+                      available.
+                    </p>
+                  </div>
 
-              <Link
-                href="/live/active"
-                className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-              >
-                Active sessions
-              </Link>
+                  <div className="p-5">
+                    {canShowPlayer && effectiveHlsUrl ? (
+                      <LivePlayerPanel src={effectiveHlsUrl} />
+                    ) : (
+                      <div className="flex aspect-video items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
+                        Waiting for live playback...
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                        HLS URL
+                      </div>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Playback URL for monitoring or player integration
+                      </p>
+                    </div>
+                    {effectiveHlsUrl ? (
+                      <CopyButton value={effectiveHlsUrl} copyKey="hls_url" />
+                    ) : null}
+                  </div>
+
+                  <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-800 break-all">
+                    {effectiveHlsUrl ?? 'Not ready yet'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Actions
+                </h3>
+
+                <div className="mt-4 space-y-3">
+                  <Link
+                    href={`/watch/live/${currentSession.stream_key}`}
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    Open player
+                    <ExternalLink className="h-4 w-4" />
+                  </Link>
+
+                  <Link
+                    href="/live/active"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    View active sessions
+                  </Link>
+
+                  <button
+                    type="button"
+                    disabled={stopMutation.isPending}
+                    onClick={() => {
+                      setSubmitError(null);
+                      setIsStopDialogOpen(true);
+                    }}
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+                  >
+                    <Square className="h-4 w-4" />
+                    {stopMutation.isPending ? 'Stopping...' : 'Stop live'}
+                  </button>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
+                  Status updates refresh automatically while the session is
+                  active.
+                </div>
+              </div>
             </div>
           </div>
         </section>

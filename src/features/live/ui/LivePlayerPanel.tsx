@@ -27,6 +27,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
 
     const handleReady = async () => {
       setIsLoading(false);
+
       try {
         await video.play();
       } catch {}
@@ -84,7 +85,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   }, [src]);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-black shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-black shadow-sm">
       {isLoading && (
         <div className="flex aspect-video items-center justify-center text-sm text-slate-400">
           Loading stream...
