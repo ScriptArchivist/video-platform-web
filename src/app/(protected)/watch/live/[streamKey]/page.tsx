@@ -38,8 +38,8 @@ export default function WatchLivePage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageErrorState
-          title="This live stream link is not valid"
-          description="The requested stream key could not be recognized."
+          title="Invalid live stream link"
+          description="The requested stream key is not valid."
         />
       </div>
     );
@@ -50,7 +50,7 @@ export default function WatchLivePage() {
       <div className="max-w-6xl space-y-6 p-6">
         <PageLoadingState
           title="Opening live stream"
-          description="We are loading stream details and checking playback availability."
+          description="Connecting to the stream and preparing playback..."
         />
       </div>
     );
@@ -60,7 +60,7 @@ export default function WatchLivePage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageErrorState
-          title="Unable to load this live stream"
+          title="Failed to load live stream"
           description={parseApiError(sessionQuery.error)}
         />
       </div>
@@ -73,8 +73,8 @@ export default function WatchLivePage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageNotFoundState
-          title="Live session not found"
-          description="This live session does not exist anymore or is no longer available."
+          title="Live stream not found"
+          description="This live stream is no longer available."
         />
       </div>
     );
@@ -82,9 +82,12 @@ export default function WatchLivePage() {
 
   const hlsUrl = resolveLiveHlsUrl(session);
   const isLive = session.status === 'started';
+  const isOffline =
+    session.status === 'stopped' || session.status === 'expired';
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
+      {/* HEADER */}
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
@@ -107,6 +110,7 @@ export default function WatchLivePage() {
         </div>
       </div>
 
+      {/* PLAYBACK */}
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold tracking-tight text-slate-900">
@@ -114,10 +118,11 @@ export default function WatchLivePage() {
           </h2>
 
           <span className="text-sm text-slate-500">
-            {session.status === 'started' ? 'Live now' : 'Waiting for stream'}
+            {isLive ? 'Live now' : isOffline ? 'Offline' : 'Waiting for stream'}
           </span>
         </div>
 
+        {/* PLAYER */}
         {hlsUrl ? (
           <LivePlayerPanel src={hlsUrl} />
         ) : (
@@ -129,12 +134,19 @@ export default function WatchLivePage() {
 
               <div className="mt-5 space-y-2">
                 <h3 className="text-lg font-semibold tracking-tight text-slate-900">
-                  {isLive ? 'Stream is starting' : 'Stream is offline'}
+                  {isLive
+                    ? 'Stream is starting'
+                    : isOffline
+                      ? 'Stream is offline'
+                      : 'Waiting for stream'}
                 </h3>
+
                 <p className="mx-auto max-w-xl text-sm leading-6 text-slate-500">
                   {isLive
-                    ? 'The live session is active, but playback has not appeared yet. Please wait a moment.'
-                    : 'Playback is not available because the stream is not currently broadcasting.'}
+                    ? 'The stream is live, but playback is still starting. This usually takes a few seconds.'
+                    : isOffline
+                      ? 'This live stream has ended.'
+                      : 'The streamer has not started broadcasting yet.'}
                 </p>
               </div>
             </div>
@@ -142,9 +154,10 @@ export default function WatchLivePage() {
         )}
       </section>
 
+      {/* ERROR BLOCK */}
       {session.error ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-6 text-sm text-slate-700 shadow-sm">
-          <p className="font-medium text-slate-900">Stream warning</p>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
+          <p className="font-medium text-red-800">Stream error</p>
           <p className="mt-2 leading-6">{session.error}</p>
         </div>
       ) : null}

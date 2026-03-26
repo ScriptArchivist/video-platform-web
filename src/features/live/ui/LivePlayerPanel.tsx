@@ -10,6 +10,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [playbackError, setPlaybackError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -82,13 +83,30 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         hlsInstance.destroy();
       }
     };
-  }, [src]);
+  }, [src, retryCount]);
+
+  // 🔁 Auto-retry when stream not ready yet
+  useEffect(() => {
+    if (!playbackError) return;
+
+    const timer = setTimeout(() => {
+      setRetryCount((c) => c + 1);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [playbackError]);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-black shadow-sm">
+    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-black shadow-sm">
+      {/* 🔴 LIVE badge */}
+      <div className="pointer-events-none absolute left-3 top-3 z-10 flex items-center gap-2 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+        LIVE
+      </div>
+
       {isLoading && (
         <div className="flex aspect-video items-center justify-center text-sm text-slate-400">
-          Loading stream...
+          Connecting to live stream...
         </div>
       )}
 
@@ -102,8 +120,11 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       />
 
       {playbackError && (
-        <div className="border-t border-slate-200 bg-white p-4 text-sm text-red-700">
+        <div className="border-t border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {playbackError}
+          <div className="mt-1 text-xs text-red-500">
+            Retrying automatically...
+          </div>
         </div>
       )}
     </div>
