@@ -9,11 +9,11 @@ const statusLabelMap: Record<LiveStatus, string> = {
 };
 
 const statusClassMap: Record<LiveStatus, string> = {
-  created: 'bg-blue-50 text-blue-700 border-blue-200',
-  started: 'bg-red-50 text-red-700 border-red-200',
-  stopped: 'bg-slate-50 text-slate-700 border-slate-200',
-  expired: 'bg-amber-50 text-amber-700 border-amber-200',
-  error: 'bg-red-50 text-red-700 border-red-200',
+  created: 'border-blue-200 bg-blue-50 text-blue-700',
+  started: 'border-red-200 bg-red-50 text-red-700',
+  stopped: 'border-slate-200 bg-slate-50 text-slate-700',
+  expired: 'border-amber-200 bg-amber-50 text-amber-700',
+  error: 'border-red-200 bg-red-50 text-red-700',
 };
 
 export function LiveStatusBadge({ status }: { status: LiveStatus }) {

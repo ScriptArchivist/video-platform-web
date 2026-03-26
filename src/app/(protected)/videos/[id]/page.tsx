@@ -78,13 +78,13 @@ export default function VideoDetailPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <p className="text-sm text-slate-500">Video #{video.id}</p>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             {video.title}
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="max-w-2xl text-sm leading-6 text-slate-500">
             Review playback, current processing state, and all available
             metadata in one place.
           </p>
@@ -93,14 +93,14 @@ export default function VideoDetailPage() {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/videos"
-            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             Back to videos
           </Link>
 
           <Link
             href={`/videos/${video.id}/edit`}
-            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             Edit
           </Link>
@@ -110,7 +110,7 @@ export default function VideoDetailPage() {
       </div>
 
       {video.status === 'failed' ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
           <p className="font-medium">Processing failed</p>
           <p className="mt-1">
             {video.error_message ?? 'This video could not be processed for playback.'}
@@ -120,7 +120,9 @@ export default function VideoDetailPage() {
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-slate-900">Playback</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+            Playback
+          </h2>
           <span className="text-sm text-slate-500">
             {video.status === 'ready'
               ? 'Playback is ready.'
@@ -136,20 +138,22 @@ export default function VideoDetailPage() {
             errorMessage={video.error_message}
           />
         ) : (
-          <div className="rounded-xl border bg-white p-6 text-sm text-slate-500">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
             Playback is not available yet.
           </div>
         )}
 
         {video.status === 'ready' && !playbackUrl ? (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-700">
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-700 shadow-sm">
             Video is marked as ready, but the playback URL is not available.
           </div>
         ) : null}
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Details</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Details
+        </h2>
         <VideoDetailMeta video={video} />
       </section>
     </div>

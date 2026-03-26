@@ -49,11 +49,15 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
-      <div className="w-full max-w-md rounded-xl border bg-white p-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Login</h1>
-        <p className="mt-1 text-sm text-slate-500">Вход в видеоплатформу</p>
+      <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Login
+          </h1>
+          <p className="text-sm text-slate-500">Вход в видеоплатформу</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-6 space-y-5">
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-700">
               Username
@@ -61,7 +65,7 @@ export default function LoginPage() {
             <input
               value={username}
               onChange={(event) => setUsername(event.target.value)}
-              className={`h-10 w-full rounded-md border px-3 text-sm outline-none focus:border-slate-400 ${
+              className={`h-10 w-full rounded-xl border px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:bg-slate-50 ${
                 fieldErrors.username ? 'border-red-300' : 'border-slate-200'
               }`}
             />
@@ -78,7 +82,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className={`h-10 w-full rounded-md border px-3 text-sm outline-none focus:border-slate-400 ${
+              className={`h-10 w-full rounded-xl border px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:bg-slate-50 ${
                 fieldErrors.password ? 'border-red-300' : 'border-slate-200'
               }`}
             />
@@ -88,7 +92,7 @@ export default function LoginPage() {
           </div>
 
           {error ? (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </div>
           ) : null}
@@ -96,7 +100,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-10 w-full items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? 'Входим...' : 'Войти'}
           </button>

@@ -12,10 +12,9 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
   const canWatch = Boolean(session.hls_ready && session.hls_url);
 
   return (
-    <article className="flex h-full flex-col rounded-xl border bg-white p-4">
-      <div className="mb-4 aspect-video overflow-hidden rounded-lg bg-slate-100">
+    <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="mb-4 aspect-video overflow-hidden rounded-xl bg-slate-100">
         {session.thumbnail_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={session.thumbnail_url}
             alt={session.title}
@@ -45,14 +44,14 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
         {session.status === 'started'
           ? 'Live now'
           : session.hls_ready
-          ? 'Ready to watch'
-          : 'Starting stream...'}
+            ? 'Ready to watch'
+            : 'Starting stream...'}
       </p>
 
       <div className="mt-auto pt-4">
         <Link
           href={`/watch/live/${session.stream_key}`}
-          className={`inline-flex h-10 items-center rounded-md px-4 text-sm font-medium transition ${
+          className={`inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition ${
             canWatch
               ? 'bg-slate-900 text-white hover:bg-slate-800'
               : 'cursor-not-allowed border border-slate-200 text-slate-400'

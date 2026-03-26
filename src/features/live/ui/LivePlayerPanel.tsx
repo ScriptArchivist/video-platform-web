@@ -84,7 +84,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   }, [src]);
 
   return (
-    <div className="overflow-hidden rounded-xl border bg-black">
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-black shadow-sm">
       {isLoading && (
         <div className="flex aspect-video items-center justify-center text-sm text-slate-400">
           Loading stream...
@@ -101,7 +101,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       />
 
       {playbackError && (
-        <div className="border-t border-slate-800 bg-white p-4 text-sm text-red-700">
+        <div className="border-t border-slate-200 bg-white p-4 text-sm text-red-700">
           {playbackError}
         </div>
       )}

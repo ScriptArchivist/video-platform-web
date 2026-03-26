@@ -6,7 +6,7 @@ export function VisibilityBadge({
   visibility: VideoVisibility;
 }) {
   return (
-    <span className="inline-flex rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700">
+    <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
       {visibility}
     </span>
   );

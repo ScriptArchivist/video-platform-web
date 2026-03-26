@@ -79,12 +79,12 @@ export default function LiveStudioPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Live studio
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="max-w-2xl text-sm leading-6 text-slate-500">
             Create a live session, get RTMP and HLS endpoints, and monitor the
             stream status.
           </p>
@@ -93,24 +93,26 @@ export default function LiveStudioPage() {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/live/active"
-            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             Active sessions
           </Link>
         </div>
       </div>
 
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-sm text-blue-800">
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-sm text-blue-800 shadow-sm">
         After the stream starts, HLS may appear with a short delay while the
         live output is initializing.
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Create session</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Create session
+        </h2>
 
         <form
           onSubmit={onSubmit}
-          className="space-y-5 rounded-xl border bg-white p-6"
+          className="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
         >
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-700">
@@ -119,7 +121,7 @@ export default function LiveStudioPage() {
             <input
               {...form.register('title')}
               disabled={createMutation.isPending}
-              className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
             />
           </div>
 
@@ -130,21 +132,21 @@ export default function LiveStudioPage() {
             <input
               {...form.register('stream_key')}
               disabled={createMutation.isPending}
-              className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
             />
           </div>
 
           {submitError ? (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {submitError}
             </div>
           ) : null}
 
-          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3">
+          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {createMutation.isPending ? 'Creating...' : 'Create live session'}
             </button>
@@ -167,13 +169,13 @@ export default function LiveStudioPage() {
       {currentSession && sessionMeta ? (
         <section className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-900">
               Live session
             </h2>
             <LiveStatusBadge status={currentSession.status} />
           </div>
 
-          <div className="space-y-6 rounded-xl border bg-white p-6">
+          <div className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-sm text-slate-500">
               {currentSession.status === 'created' &&
                 'Waiting for stream to start'}
@@ -183,7 +185,7 @@ export default function LiveStudioPage() {
               {currentSession.status === 'error' && 'Stream failed'}
             </div>
 
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
               {currentSession.status === 'created' && (
                 <p>Stream is created. Start sending RTMP to begin live.</p>
               )}
@@ -199,16 +201,16 @@ export default function LiveStudioPage() {
               )}
             </div>
 
-            <dl className="space-y-3 text-sm">
+            <dl className="space-y-4 text-sm">
               <div>
-                <dt className="text-slate-500">RTMP URL</dt>
+                <dt className="mb-1 text-slate-500">RTMP URL</dt>
                 <dd className="break-all text-slate-900">
                   {sessionMeta.rtmp_url}
                 </dd>
               </div>
 
               <div>
-                <dt className="text-slate-500">HLS URL</dt>
+                <dt className="mb-1 text-slate-500">HLS URL</dt>
                 <dd className="break-all text-slate-900">
                   {effectiveHlsUrl ?? 'Not ready yet'}
                 </dd>
@@ -223,21 +225,21 @@ export default function LiveStudioPage() {
                   setSubmitError(null);
                   setIsStopDialogOpen(true);
                 }}
-                className="inline-flex h-10 items-center rounded-md border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+                className="inline-flex h-10 items-center rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50"
               >
                 {stopMutation.isPending ? 'Stopping...' : 'Stop'}
               </button>
 
               <Link
                 href={`/watch/live/${currentSession.stream_key}`}
-                className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
                 Open player
               </Link>
 
               <Link
                 href="/live/active"
-                className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
                 Active sessions
               </Link>

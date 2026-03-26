@@ -85,7 +85,7 @@ export default function WatchLivePage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             {session.title ?? 'Live stream'}
@@ -100,7 +100,7 @@ export default function WatchLivePage() {
 
           <Link
             href="/live/active"
-            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             Back to active sessions
           </Link>
@@ -109,7 +109,9 @@ export default function WatchLivePage() {
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-slate-900">Playback</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+            Playback
+          </h2>
 
           <span className="text-sm text-slate-500">
             {session.status === 'started' ? 'Live now' : 'Waiting for stream'}
@@ -119,7 +121,7 @@ export default function WatchLivePage() {
         {hlsUrl ? (
           <LivePlayerPanel src={hlsUrl} />
         ) : (
-          <div className="rounded-xl border bg-white p-6 text-sm text-slate-500">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
             {isLive
               ? 'Stream is starting. Please wait...'
               : 'Stream is offline'}
@@ -128,7 +130,7 @@ export default function WatchLivePage() {
       </section>
 
       {session.error ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
           {session.error}
         </div>
       ) : null}

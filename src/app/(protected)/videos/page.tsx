@@ -94,12 +94,12 @@ export default function VideosPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Videos
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="max-w-2xl text-sm leading-6 text-slate-500">
             Browse uploaded videos, filter the catalog, and open a video for
             playback or editing.
           </p>
@@ -108,7 +108,7 @@ export default function VideosPage() {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/videos/new"
-            className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
+            className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
           >
             Upload video
           </Link>
@@ -116,9 +116,11 @@ export default function VideosPage() {
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Filters</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Filters
+        </h2>
 
-        <div className="rounded-xl border bg-white p-6">
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <VideoFilters
             search={searchInput}
             visibility={visibility}
@@ -140,7 +142,9 @@ export default function VideosPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Results</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Results
+        </h2>
 
         {videosQuery.isLoading && !videosQuery.data && (
           <PageLoadingState
@@ -169,11 +173,11 @@ export default function VideosPage() {
 
         {videosQuery.data && videosQuery.data.items.length > 0 && (
           <div className={`space-y-4 ${videosQuery.isFetching ? 'opacity-60' : ''}`}>
-            <div className="rounded-xl border bg-white p-6">
+            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               <VideosTable items={videosQuery.data.items} />
             </div>
 
-            <div className="rounded-xl border bg-white p-4">
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <PaginationControls
                 page={videosQuery.data.page}
                 perPage={videosQuery.data.per_page}

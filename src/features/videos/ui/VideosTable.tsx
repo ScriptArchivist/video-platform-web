@@ -57,8 +57,7 @@ export function VideosTable({ items }: VideosTableProps) {
             href={`/videos/${video.id}`}
             className="flex h-full"
           >
-            <article className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50">
-              {/* FIX: строго фиксированная зона превью */}
+            <article className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 hover:shadow-sm">
               <div className="relative h-[200px] w-full shrink-0 overflow-hidden bg-slate-200">
                 {video.thumbnail_url ? (
                   <img
@@ -73,14 +72,13 @@ export function VideosTable({ items }: VideosTableProps) {
                 )}
 
                 {duration && (
-                  <div className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-xs font-medium text-white">
+                  <div className="absolute bottom-2 right-2 rounded-lg bg-black/80 px-2 py-1 text-xs font-medium text-white">
                     {duration}
                   </div>
                 )}
               </div>
 
-              {/* FIX: контент всегда одинаковой высоты */}
-              <div className="flex flex-1 flex-col px-4 py-3">
+              <div className="flex flex-1 flex-col p-4">
                 <div className="line-clamp-2 min-h-[40px] text-sm font-semibold leading-5 text-slate-900">
                   {video.title}
                 </div>
@@ -93,7 +91,7 @@ export function VideosTable({ items }: VideosTableProps) {
                   {formatUploadedAt(video.uploaded_at)}
                 </div>
 
-                <div className="mt-auto pt-3">
+                <div className="mt-auto pt-4">
                   <VisibilityBadge visibility={video.visibility} />
                 </div>
               </div>

@@ -15,12 +15,12 @@ export default function ActiveLiveSessionsPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Active live sessions
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="max-w-2xl text-sm leading-6 text-slate-500">
             View currently active live streams and open a watch page when
             playback is ready.
           </p>
@@ -29,7 +29,7 @@ export default function ActiveLiveSessionsPage() {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/live"
-            className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
+            className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
           >
             Open live studio
           </Link>
@@ -37,7 +37,9 @@ export default function ActiveLiveSessionsPage() {
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Sessions</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Sessions
+        </h2>
 
         {activeQuery.isLoading && (
           <PageLoadingState

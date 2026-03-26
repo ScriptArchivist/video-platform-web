@@ -31,7 +31,7 @@ export function VideoPlaybackPanel({ src }: VideoPlaybackPanelProps) {
   }, [src]);
 
   return (
-    <div className="overflow-hidden rounded-xl border bg-black">
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-black shadow-sm">
       <video ref={videoRef} controls className="aspect-video w-full" />
     </div>
   );

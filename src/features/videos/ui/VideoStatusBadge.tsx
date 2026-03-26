@@ -9,11 +9,11 @@ const statusLabelMap: Record<VideoStatus, string> = {
 };
 
 const statusClassMap: Record<VideoStatus, string> = {
-  uploading: 'bg-blue-50 text-blue-700 border-blue-200',
-  uploaded: 'bg-slate-50 text-slate-700 border-slate-200',
-  processing: 'bg-amber-50 text-amber-700 border-amber-200',
-  ready: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  failed: 'bg-red-50 text-red-700 border-red-200',
+  uploading: 'border-blue-200 bg-blue-50 text-blue-700',
+  uploaded: 'border-slate-200 bg-slate-50 text-slate-700',
+  processing: 'border-amber-200 bg-amber-50 text-amber-700',
+  ready: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  failed: 'border-red-200 bg-red-50 text-red-700',
 };
 
 export function VideoStatusBadge({ status }: { status: VideoStatus }) {

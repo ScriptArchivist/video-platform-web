@@ -9,13 +9,13 @@ interface VideoDetailMetaProps {
 export function VideoDetailMeta({ video }: VideoDetailMetaProps) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <section className="rounded-xl border bg-white p-5">
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center gap-2">
           <VideoStatusBadge status={video.status} />
           <VisibilityBadge visibility={video.visibility} />
         </div>
 
-        <dl className="space-y-3 text-sm">
+        <dl className="space-y-4 text-sm">
           <div>
             <dt className="mb-1 text-slate-500">Title</dt>
             <dd className="font-medium text-slate-900">{video.title}</dd>
@@ -23,7 +23,9 @@ export function VideoDetailMeta({ video }: VideoDetailMetaProps) {
 
           <div>
             <dt className="mb-1 text-slate-500">Description</dt>
-            <dd className="text-slate-800">{video.description ?? '—'}</dd>
+            <dd className="leading-6 text-slate-800">
+              {video.description ?? '—'}
+            </dd>
           </div>
 
           <div>
@@ -59,11 +61,13 @@ export function VideoDetailMeta({ video }: VideoDetailMetaProps) {
         </dl>
       </section>
 
-      <section className="rounded-xl border bg-white p-5">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">Owner</h2>
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">
+          Owner
+        </h2>
 
         {video.owner ? (
-          <dl className="space-y-3 text-sm">
+          <dl className="space-y-4 text-sm">
             <div>
               <dt className="mb-1 text-slate-500">Username</dt>
               <dd className="text-slate-900">{video.owner.username}</dd>

@@ -47,7 +47,7 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isLoading) {
           onClose();
@@ -58,12 +58,12 @@ export function ConfirmDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        className="w-full max-w-md rounded-xl border bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl"
       >
         <div className="space-y-2">
           <h2
             id="confirm-dialog-title"
-            className="text-lg font-semibold text-slate-900"
+            className="text-lg font-semibold tracking-tight text-slate-900"
           >
             {title}
           </h2>
@@ -76,7 +76,7 @@ export function ConfirmDialog({
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -87,7 +87,7 @@ export function ConfirmDialog({
               void onConfirm();
             }}
             disabled={isLoading}
-            className={`inline-flex h-10 items-center rounded-md px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${confirmButtonClassName}`}
+            className={`inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${confirmButtonClassName}`}
           >
             {isLoading ? 'Processing...' : confirmText}
           </button>

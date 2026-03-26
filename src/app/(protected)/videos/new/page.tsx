@@ -112,12 +112,12 @@ export default function NewVideoPage() {
 
   return (
     <div className="max-w-4xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Upload video
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="max-w-2xl text-sm leading-6 text-slate-500">
             Create metadata, upload a file, and monitor processing until
             playback is ready.
           </p>
@@ -126,7 +126,7 @@ export default function NewVideoPage() {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/videos"
-            className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
             Back to videos
           </Link>
@@ -134,18 +134,20 @@ export default function NewVideoPage() {
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">Upload form</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Upload form
+        </h2>
 
         <form
           onSubmit={onSubmit}
-          className="space-y-5 rounded-xl border bg-white p-6"
+          className="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
         >
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-700">Title</label>
             <input
               {...form.register('title')}
               disabled={isFlowStarted}
-              className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
             />
             {form.formState.errors.title ? (
               <p className="text-sm text-red-700">
@@ -161,7 +163,7 @@ export default function NewVideoPage() {
             <textarea
               {...form.register('description')}
               disabled={isFlowStarted}
-              className="min-h-[120px] w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="min-h-[120px] w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
             />
             {form.formState.errors.description ? (
               <p className="text-sm text-red-700">
@@ -177,7 +179,7 @@ export default function NewVideoPage() {
             <select
               {...form.register('visibility')}
               disabled={isFlowStarted}
-              className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
             >
               <option value="private">private</option>
               <option value="public">public</option>
@@ -202,7 +204,7 @@ export default function NewVideoPage() {
                 setFile(event.target.files?.[0] ?? null);
                 form.clearErrors('root');
               }}
-              className="block w-full text-sm text-slate-700 file:mr-4 file:rounded-md file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-800 disabled:cursor-not-allowed"
+              className="block w-full text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white file:transition hover:file:bg-slate-800 disabled:cursor-not-allowed"
             />
             {file ? (
               <p className="text-sm text-slate-500">
@@ -213,29 +215,29 @@ export default function NewVideoPage() {
           </div>
 
           {form.formState.errors.root ? (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {form.formState.errors.root.message}
             </div>
           ) : null}
 
           {submitError ? (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {submitError}
             </div>
           ) : null}
 
-          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3">
+          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
             <button
               type="submit"
               disabled={isFlowStarted}
-              className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {uploadMutation.isPending ? 'Uploading...' : 'Upload'}
             </button>
 
             <Link
               href="/videos"
-              className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
               Cancel
             </Link>
@@ -251,11 +253,11 @@ export default function NewVideoPage() {
       {(uploadMutation.isPending || uploadProgress > 0) &&
       createdVideoId === null ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">
+          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
             Upload progress
           </h2>
 
-          <div className="rounded-xl border bg-white p-6">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <UploadProgress progress={uploadProgress} />
           </div>
         </section>
@@ -263,24 +265,26 @@ export default function NewVideoPage() {
 
       {isProcessingVisible && detailQuery.data ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Processing</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+            Processing
+          </h2>
 
           <ProcessingStatePanel
             status={detailQuery.data.status}
             errorMessage={detailQuery.data.error_message}
           />
 
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-6">
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <Link
               href={`/videos/${detailQuery.data.id}`}
-              className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
+              className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
             >
               Open video
             </Link>
 
             <Link
               href="/videos"
-              className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
               Back to list
             </Link>
