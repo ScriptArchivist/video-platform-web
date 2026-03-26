@@ -55,16 +55,16 @@ export function VideosTable({ items }: VideosTableProps) {
           <Link
             key={video.id}
             href={`/videos/${video.id}`}
-            className="flex h-full"
+            className="block h-full rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300"
           >
-            <article className="flex h-full w-full flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md">
+            <article className="group flex h-full w-full flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md">
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
                 <div className="relative h-[200px] w-full shrink-0 overflow-hidden bg-slate-200">
                   {video.thumbnail_url ? (
                     <img
                       src={video.thumbnail_url}
                       alt={video.title}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-[1.02]"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">

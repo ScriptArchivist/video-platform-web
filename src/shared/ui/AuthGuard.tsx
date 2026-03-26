@@ -22,8 +22,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     return (
       <div className="p-6">
         <PageLoadingState
-          title="Проверка сессии"
-          description="Инициализация авторизации."
+          title="Checking your session"
+          description="We are verifying authorization before opening the workspace."
         />
       </div>
     );
@@ -33,8 +33,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     return (
       <div className="p-6">
         <PageLoadingState
-          title="Проверка сессии"
-          description="Если авторизация отсутствует, будет выполнен переход на страницу входа."
+          title="Redirecting to login"
+          description="Authorization was not found, so the app is preparing the sign-in page."
         />
       </div>
     );

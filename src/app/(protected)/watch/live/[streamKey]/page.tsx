@@ -38,8 +38,8 @@ export default function WatchLivePage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageErrorState
-          title="Invalid stream key"
-          description="The requested stream key is not valid."
+          title="This live stream link is not valid"
+          description="The requested stream key could not be recognized."
         />
       </div>
     );
@@ -49,8 +49,8 @@ export default function WatchLivePage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageLoadingState
-          title="Loading live session"
-          description="Fetching live session details and playback state."
+          title="Opening live stream"
+          description="We are loading stream details and checking playback availability."
         />
       </div>
     );
@@ -60,7 +60,7 @@ export default function WatchLivePage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageErrorState
-          title="Failed to load live session"
+          title="Unable to load this live stream"
           description={parseApiError(sessionQuery.error)}
         />
       </div>
@@ -74,7 +74,7 @@ export default function WatchLivePage() {
       <div className="max-w-6xl space-y-6 p-6">
         <PageNotFoundState
           title="Live session not found"
-          description="The requested live session does not exist or is no longer available."
+          description="This live session does not exist anymore or is no longer available."
         />
       </div>
     );
@@ -121,17 +121,31 @@ export default function WatchLivePage() {
         {hlsUrl ? (
           <LivePlayerPanel src={hlsUrl} />
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
-            {isLive
-              ? 'Stream is starting. Please wait...'
-              : 'Stream is offline'}
+          <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="mx-auto max-w-2xl text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                <span className="text-lg">▶</span>
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+                  {isLive ? 'Stream is starting' : 'Stream is offline'}
+                </h3>
+                <p className="mx-auto max-w-xl text-sm leading-6 text-slate-500">
+                  {isLive
+                    ? 'The live session is active, but playback has not appeared yet. Please wait a moment.'
+                    : 'Playback is not available because the stream is not currently broadcasting.'}
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </section>
 
       {session.error ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
-          {session.error}
+        <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-6 text-sm text-slate-700 shadow-sm">
+          <p className="font-medium text-slate-900">Stream warning</p>
+          <p className="mt-2 leading-6">{session.error}</p>
         </div>
       ) : null}
     </div>

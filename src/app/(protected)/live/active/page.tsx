@@ -43,14 +43,14 @@ export default function ActiveLiveSessionsPage() {
 
         {activeQuery.isLoading ? (
           <PageLoadingState
-            title="Loading active live sessions"
-            description="Fetching live sessions from backend."
+            title="Looking for active live sessions"
+            description="We are checking the backend for currently available streams."
           />
         ) : null}
 
         {activeQuery.isError ? (
           <PageErrorState
-            title="Failed to load active live sessions"
+            title="Unable to load live sessions"
             description={parseApiError(activeQuery.error)}
           />
         ) : null}
@@ -59,8 +59,8 @@ export default function ActiveLiveSessionsPage() {
         !activeQuery.isError &&
         (!activeQuery.data || activeQuery.data.length === 0) ? (
           <PageEmptyState
-            title="No active live sessions"
-            description="Start a new live session in Live Studio."
+            title="No active live sessions right now"
+            description="Start a new live session in Live Studio and it will appear here."
           />
         ) : null}
 

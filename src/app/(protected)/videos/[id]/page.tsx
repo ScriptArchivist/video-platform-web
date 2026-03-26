@@ -30,8 +30,8 @@ export default function VideoDetailPage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageErrorState
-          title="Invalid video id"
-          description="The requested video id is not valid."
+          title="This video link is not valid"
+          description="The requested video identifier could not be recognized."
         />
       </div>
     );
@@ -41,8 +41,8 @@ export default function VideoDetailPage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageLoadingState
-          title="Loading video"
-          description="Fetching video details and current processing state."
+          title="Opening video page"
+          description="We are loading video details, playback status, and related metadata."
         />
       </div>
     );
@@ -52,7 +52,7 @@ export default function VideoDetailPage() {
     return (
       <div className="max-w-6xl space-y-6 p-6">
         <PageErrorState
-          title="Failed to load video"
+          title="Unable to load this video"
           description={parseApiError(detailQuery.error).message}
         />
       </div>
@@ -66,7 +66,7 @@ export default function VideoDetailPage() {
       <div className="max-w-6xl space-y-6 p-6">
         <PageNotFoundState
           title="Video not found"
-          description="The requested video does not exist or is no longer available."
+          description="This video does not exist anymore or is not available in the current catalog."
         />
       </div>
     );
@@ -110,10 +110,13 @@ export default function VideoDetailPage() {
       </header>
 
       {video.status === 'failed' ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
-          <p className="font-medium">Processing failed</p>
-          <p className="mt-1">
-            {video.error_message ?? 'This video could not be processed for playback.'}
+        <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-6 text-sm text-slate-700 shadow-sm">
+          <p className="font-medium text-slate-900">
+            Processing did not finish successfully
+          </p>
+          <p className="mt-2 leading-6">
+            {video.error_message ??
+              'This video could not be prepared for playback. Please review the details below.'}
           </p>
         </div>
       ) : null}
@@ -138,14 +141,32 @@ export default function VideoDetailPage() {
             errorMessage={video.error_message}
           />
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
-            Playback is not available yet.
+          <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="mx-auto max-w-2xl text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                <span className="text-lg">▶</span>
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+                  Playback is not available yet
+                </h3>
+                <p className="mx-auto max-w-xl text-sm leading-6 text-slate-500">
+                  The video page is available, but the playback source has not
+                  appeared yet.
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
         {video.status === 'ready' && !playbackUrl ? (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-700 shadow-sm">
-            Video is marked as ready, but the playback URL is not available.
+          <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-6 text-sm text-slate-700 shadow-sm">
+            <p className="font-medium text-slate-900">Playback link is missing</p>
+            <p className="mt-2 leading-6">
+              The video is marked as ready, but the playback URL is not
+              available yet.
+            </p>
           </div>
         ) : null}
       </section>

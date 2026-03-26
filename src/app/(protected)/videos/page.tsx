@@ -148,25 +148,25 @@ export default function VideosPage() {
 
         {videosQuery.isLoading && !videosQuery.data ? (
           <PageLoadingState
-            title="Loading videos"
-            description="Fetching the current video list."
+            title="Preparing video catalog"
+            description="We are loading the latest videos and current filters."
           />
         ) : null}
 
         {videosQuery.isError ? (
           <PageErrorState
-            title="Failed to load videos"
+            title="Unable to open the video catalog"
             description={parseApiError(videosQuery.error)}
           />
         ) : null}
 
         {videosQuery.data && videosQuery.data.items.length === 0 ? (
           <PageEmptyState
-            title={hasFilters ? 'No videos found' : 'No videos yet'}
+            title={hasFilters ? 'No videos match these filters' : 'No videos yet'}
             description={
               hasFilters
-                ? 'Try changing the search query or visibility filter.'
-                : 'Upload the first video to start filling the catalog.'
+                ? 'Try changing the search text or visibility filter to broaden the results.'
+                : 'Upload the first video to start building your catalog.'
             }
           />
         ) : null}
