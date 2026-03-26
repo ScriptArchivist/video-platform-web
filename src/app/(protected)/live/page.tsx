@@ -79,7 +79,7 @@ export default function LiveStudioPage() {
 
   return (
     <div className="max-w-6xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Live studio
@@ -98,12 +98,18 @@ export default function LiveStudioPage() {
             Active sessions
           </Link>
         </div>
-      </div>
+      </header>
 
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-sm text-blue-800 shadow-sm">
-        After the stream starts, HLS may appear with a short delay while the
-        live output is initializing.
-      </div>
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          Notes
+        </h2>
+
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-sm leading-6 text-blue-800 shadow-sm">
+          After the stream starts, HLS may appear with a short delay while the
+          live output is initializing.
+        </div>
+      </section>
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold tracking-tight text-slate-900">
@@ -112,14 +118,33 @@ export default function LiveStudioPage() {
 
         <form
           onSubmit={onSubmit}
+          autoComplete="off"
           className="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
         >
+          <input
+            type="text"
+            name="prevent_autofill_username"
+            autoComplete="username"
+            className="hidden"
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+          <input
+            type="password"
+            name="prevent_autofill_password"
+            autoComplete="new-password"
+            className="hidden"
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-700">
               Title (optional)
             </label>
             <input
               {...form.register('title')}
+              autoComplete="off"
               disabled={createMutation.isPending}
               className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
             />
@@ -131,6 +156,8 @@ export default function LiveStudioPage() {
             </label>
             <input
               {...form.register('stream_key')}
+              autoComplete="off"
+              spellCheck={false}
               disabled={createMutation.isPending}
               className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
             />
@@ -160,10 +187,16 @@ export default function LiveStudioPage() {
       </section>
 
       {createdStreamKey && sessionQuery.isError ? (
-        <PageErrorState
-          title="Failed to load live session"
-          description={parseApiError(sessionQuery.error)}
-        />
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+            State
+          </h2>
+
+          <PageErrorState
+            title="Failed to load live session"
+            description={parseApiError(sessionQuery.error)}
+          />
+        </section>
       ) : null}
 
       {currentSession && sessionMeta ? (
