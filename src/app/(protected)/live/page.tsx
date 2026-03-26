@@ -453,21 +453,47 @@ export default function LiveStudioPage() {
               </div>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5">
-              <h3 className="text-sm font-semibold text-slate-900">
-                OBS setup
-              </h3>
-              <ol className="mt-3 space-y-2 text-sm leading-6 text-slate-700">
-                <li>1. Open OBS and go to Settings → Stream.</li>
-                <li>2. Set the custom server to the RTMP URL above.</li>
-                <li>3. Paste the stream key into the Stream Key field.</li>
-                <li>4. Save settings and click “Start Streaming” in OBS.</li>
-                <li>
-                  5. Return here to confirm the session becomes live and preview
-                  playback.
-                </li>
-              </ol>
-            </div>
+            {currentSession.status === 'created' && (
+              <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5">
+                <h3 className="text-sm font-semibold text-slate-900">
+                  How to go live (OBS)
+                </h3>
+
+                <div className="mt-3 space-y-3 text-sm text-slate-700">
+                  <div className="flex gap-3">
+                    <span className="font-medium text-slate-900">1.</span>
+                    <span>
+                      Open OBS → <strong>Settings → Stream</strong>
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span className="font-medium text-slate-900">2.</span>
+                    <span>
+                      Set <strong>Server</strong> = RTMP URL
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span className="font-medium text-slate-900">3.</span>
+                    <span>
+                      Set <strong>Stream Key</strong> = stream key above
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span className="font-medium text-slate-900">4.</span>
+                    <span>
+                      Click <strong>Start Streaming</strong> in OBS
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-blue-200 bg-white p-3 text-sm text-slate-600">
+                  After starting, the stream will appear here within a few seconds.
+                </div>
+              </div>
+            )}
 
             <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
               <div className="space-y-4">
