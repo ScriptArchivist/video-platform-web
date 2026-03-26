@@ -107,7 +107,7 @@ export default function EditVideoPage() {
         },
       });
 
-      showSuccess('Video updated');
+      showSuccess('Saved successfully');
       router.push(`/videos/${videoId}`);
     } catch (error) {
       const parsed = parseApiError(error);
@@ -134,12 +134,12 @@ export default function EditVideoPage() {
   return (
     <div className="max-w-4xl space-y-6 p-6">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-2">
           <p className="text-sm text-slate-500">Video #{videoId}</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Edit video
           </h1>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="text-sm text-slate-500">
             Update video metadata and return to the detail page after saving.
           </p>
         </div>
@@ -176,7 +176,9 @@ export default function EditVideoPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Description</label>
+            <label className="text-sm font-medium text-slate-700">
+              Description
+            </label>
             <textarea
               {...form.register('description')}
               disabled={updateMutation.isPending}
@@ -190,7 +192,9 @@ export default function EditVideoPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Visibility</label>
+            <label className="text-sm font-medium text-slate-700">
+              Visibility
+            </label>
             <select
               {...form.register('visibility')}
               disabled={updateMutation.isPending}
@@ -219,7 +223,7 @@ export default function EditVideoPage() {
               disabled={updateMutation.isPending}
               className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {updateMutation.isPending ? 'Saving...' : 'Save changes'}
+              {updateMutation.isPending ? 'Saving...' : 'Save'}
             </button>
 
             <button
@@ -232,7 +236,7 @@ export default function EditVideoPage() {
             </button>
 
             <span className="text-sm text-slate-500">
-              After saving, you will return to the detail page.
+              Changes will be saved and you will return to the video page.
             </span>
           </div>
         </form>

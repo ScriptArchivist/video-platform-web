@@ -113,12 +113,13 @@ export default function NewVideoPage() {
   return (
     <div className="max-w-4xl space-y-6 p-6">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Upload video
           </h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Create metadata, upload a file, and monitor processing until playback is ready.
+          <p className="text-sm text-slate-500">
+            Create metadata, upload a file, and monitor processing until
+            playback is ready.
           </p>
         </div>
 
@@ -190,7 +191,9 @@ export default function NewVideoPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Video file</label>
+            <label className="text-sm font-medium text-slate-700">
+              Video file
+            </label>
             <input
               type="file"
               accept="video/*"
@@ -227,7 +230,7 @@ export default function NewVideoPage() {
               disabled={isFlowStarted}
               className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {uploadMutation.isPending ? 'Uploading...' : 'Start upload'}
+              {uploadMutation.isPending ? 'Uploading...' : 'Upload'}
             </button>
 
             <Link
@@ -238,16 +241,23 @@ export default function NewVideoPage() {
             </Link>
 
             <span className="text-sm text-slate-500">
-              After upload starts, processing status will appear below.
+              Upload will start immediately. Processing status will appear
+              below.
             </span>
           </div>
         </form>
       </section>
 
-      {(uploadMutation.isPending || uploadProgress > 0) && createdVideoId === null ? (
+      {(uploadMutation.isPending || uploadProgress > 0) &&
+      createdVideoId === null ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Upload progress</h2>
-          <UploadProgress progress={uploadProgress} />
+          <h2 className="text-lg font-semibold text-slate-900">
+            Upload progress
+          </h2>
+
+          <div className="rounded-xl border bg-white p-6">
+            <UploadProgress progress={uploadProgress} />
+          </div>
         </section>
       ) : null}
 
@@ -260,19 +270,19 @@ export default function NewVideoPage() {
             errorMessage={detailQuery.data.error_message}
           />
 
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-4">
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-6">
             <Link
               href={`/videos/${detailQuery.data.id}`}
               className="inline-flex h-10 items-center rounded-md bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
             >
-              Open video detail
+              Open video
             </Link>
 
             <Link
               href="/videos"
               className="inline-flex h-10 items-center rounded-md border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
-              Back to videos
+              Back to list
             </Link>
           </div>
         </section>

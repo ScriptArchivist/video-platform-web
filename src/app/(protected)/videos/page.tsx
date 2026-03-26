@@ -95,12 +95,13 @@ export default function VideosPage() {
   return (
     <div className="max-w-6xl space-y-6 p-6">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Videos
           </h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Browse uploaded videos, filter the catalog, and open a video for playback or editing.
+          <p className="text-sm text-slate-500">
+            Browse uploaded videos, filter the catalog, and open a video for
+            playback or editing.
           </p>
         </div>
 
@@ -116,30 +117,36 @@ export default function VideosPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">Filters</h2>
-        <VideoFilters
-          search={searchInput}
-          visibility={visibility}
-          onSearchChange={setSearchInput}
-          onVisibilityChange={(value) => {
-            setVisibility(value);
-            setPage(1);
-          }}
-          onReset={() => {
-            setSearchInput('');
-            setSearch('');
-            setVisibility(undefined);
-            setPage(1);
-          }}
-          showReset={hasFilters}
-          total={videosQuery.data?.total}
-        />
+
+        <div className="rounded-xl border bg-white p-6">
+          <VideoFilters
+            search={searchInput}
+            visibility={visibility}
+            onSearchChange={setSearchInput}
+            onVisibilityChange={(value) => {
+              setVisibility(value);
+              setPage(1);
+            }}
+            onReset={() => {
+              setSearchInput('');
+              setSearch('');
+              setVisibility(undefined);
+              setPage(1);
+            }}
+            showReset={hasFilters}
+            total={videosQuery.data?.total}
+          />
+        </div>
       </section>
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">Results</h2>
 
         {videosQuery.isLoading && !videosQuery.data && (
-          <PageLoadingState title="Loading videos" description="Fetching the current video list." />
+          <PageLoadingState
+            title="Loading videos"
+            description="Fetching the current video list."
+          />
         )}
 
         {videosQuery.isError && (
@@ -162,7 +169,9 @@ export default function VideosPage() {
 
         {videosQuery.data && videosQuery.data.items.length > 0 && (
           <div className={`space-y-4 ${videosQuery.isFetching ? 'opacity-60' : ''}`}>
-            <VideosTable items={videosQuery.data.items} />
+            <div className="rounded-xl border bg-white p-6">
+              <VideosTable items={videosQuery.data.items} />
+            </div>
 
             <div className="rounded-xl border bg-white p-4">
               <PaginationControls

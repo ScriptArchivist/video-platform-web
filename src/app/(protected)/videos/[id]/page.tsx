@@ -79,13 +79,14 @@ export default function VideoDetailPage() {
   return (
     <div className="max-w-6xl space-y-6 p-6">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-2">
           <p className="text-sm text-slate-500">Video #{video.id}</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             {video.title}
           </h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Review playback, current processing state, and all available metadata in one place.
+          <p className="text-sm text-slate-500">
+            Review playback, current processing state, and all available
+            metadata in one place.
           </p>
         </div>
 
@@ -109,7 +110,7 @@ export default function VideoDetailPage() {
       </div>
 
       {video.status === 'failed' ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
           <p className="font-medium">Processing failed</p>
           <p className="mt-1">
             {video.error_message ?? 'This video could not be processed for playback.'}
@@ -141,7 +142,7 @@ export default function VideoDetailPage() {
         )}
 
         {video.status === 'ready' && !playbackUrl ? (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-700">
             Video is marked as ready, but the playback URL is not available.
           </div>
         ) : null}

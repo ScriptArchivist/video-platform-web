@@ -16,12 +16,13 @@ export default function ActiveLiveSessionsPage() {
   return (
     <div className="max-w-6xl space-y-6 p-6">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             Active live sessions
           </h1>
-          <p className="mt-2 text-sm text-slate-500">
-            View currently active live streams and open a watch page when playback is ready.
+          <p className="text-sm text-slate-500">
+            View currently active live streams and open a watch page when
+            playback is ready.
           </p>
         </div>
 

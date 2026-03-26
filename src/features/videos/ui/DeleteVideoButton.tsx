@@ -24,7 +24,7 @@ export function DeleteVideoButton({ videoId }: DeleteVideoButtonProps) {
 
     try {
       await deleteMutation.mutateAsync(videoId);
-      showSuccess('Video deleted');
+      showSuccess('Deleted successfully');
       setIsDialogOpen(false);
       router.push('/videos');
     } catch (error) {
@@ -46,7 +46,7 @@ export function DeleteVideoButton({ videoId }: DeleteVideoButtonProps) {
           disabled={deleteMutation.isPending}
           className="inline-flex h-10 items-center rounded-md border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+          {deleteMutation.isPending ? 'Deleting...' : 'Delete video'}
         </button>
 
         {errorMessage ? (

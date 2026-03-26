@@ -86,11 +86,11 @@ export default function WatchLivePage() {
   return (
     <div className="max-w-6xl space-y-6 p-6">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-white p-6">
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
             {session.title ?? 'Live stream'}
           </h1>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="text-sm text-slate-500">
             Stream key: {session.stream_key}
           </p>
         </div>
@@ -108,13 +108,11 @@ export default function WatchLivePage() {
       </div>
 
       <section className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-slate-900">Playback</h2>
 
           <span className="text-sm text-slate-500">
-            {session.status === 'started'
-              ? 'Live now'
-              : 'Waiting for stream'}
+            {session.status === 'started' ? 'Live now' : 'Waiting for stream'}
           </span>
         </div>
 
@@ -130,7 +128,7 @@ export default function WatchLivePage() {
       </section>
 
       {session.error ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
           {session.error}
         </div>
       ) : null}
