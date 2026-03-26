@@ -23,7 +23,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   const removeToast = useCallback((id: number) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
   const show = useCallback(
@@ -32,7 +32,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
       setToasts((prev) => [...prev, { id, message, type }]);
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         removeToast(id);
       }, 3000);
     },
@@ -40,8 +40,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value: ToastContextValue = {
-    showSuccess: (msg) => show(msg, 'success'),
-    showError: (msg) => show(msg, 'error'),
+    showSuccess: (message) => show(message, 'success'),
+    showError: (message) => show(message, 'error'),
   };
 
   return (
