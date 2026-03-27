@@ -30,6 +30,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/watch/live/[streamKey]/page.js"
+    ],
+    "/(protected)/live/active/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/live/active/page.js"
     ]
   }
 }
