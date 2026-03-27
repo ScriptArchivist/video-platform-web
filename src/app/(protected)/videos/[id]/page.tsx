@@ -29,7 +29,7 @@ export default function VideoDetailPage() {
 
   if (!Number.isFinite(videoId)) {
     return (
-      <div className="max-w-6xl space-y-6">
+      <div className="space-y-6">
         <PageErrorState
           title="This video link is not valid"
           description="The requested video identifier could not be recognized."
@@ -40,7 +40,7 @@ export default function VideoDetailPage() {
 
   if (detailQuery.isLoading) {
     return (
-      <div className="max-w-6xl space-y-6">
+      <div className="space-y-6">
         <PageLoadingState
           title="Opening video page"
           description="We are loading video details, playback status, and related metadata."
@@ -51,7 +51,7 @@ export default function VideoDetailPage() {
 
   if (detailQuery.isError) {
     return (
-      <div className="max-w-6xl space-y-6">
+      <div className="space-y-6">
         <PageErrorState
           title="Unable to load this video"
           description={parseApiError(detailQuery.error).message}
@@ -64,7 +64,7 @@ export default function VideoDetailPage() {
 
   if (!video) {
     return (
-      <div className="max-w-6xl space-y-6">
+      <div className="space-y-6">
         <PageNotFoundState
           title="Video not found"
           description="This video does not exist anymore or is not available in the current catalog."
@@ -79,42 +79,40 @@ export default function VideoDetailPage() {
 
   return (
     <div className="space-y-6">
-      <header className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
-        <div className="min-w-0 space-y-2">
-          <p className="text-sm font-medium text-slate-500">Video #{video.id}</p>
-          <h1 className="app-page-title">{video.title}</h1>
-          <p className="app-page-description">
-            Review playback, current processing state, and all available
-            metadata in one place.
-          </p>
-        </div>
+      <header className="app-card p-6 sm:p-7">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 space-y-3">
+            <Link
+              href="/videos"
+              className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to videos
+            </Link>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <Link href="/videos" className="app-btn-secondary gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Back to videos
-          </Link>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-slate-500">Video #{video.id}</p>
+              <h1 className="app-page-title">{video.title}</h1>
+              <p className="app-page-description">
+                Review playback, current processing state, and all available
+                metadata in one place.
+              </p>
+            </div>
+          </div>
 
-          <Link href={`/videos/${video.id}/edit`} className="app-btn-secondary gap-2">
-            <PencilLine className="h-4 w-4" />
-            Edit
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={`/videos/${video.id}/edit`}
+              className="app-btn-secondary gap-2"
+            >
+              <PencilLine className="h-4 w-4" />
+              Edit
+            </Link>
 
-          <DeleteVideoButton videoId={video.id} />
+            <DeleteVideoButton videoId={video.id} />
+          </div>
         </div>
       </header>
-
-      {video.status === 'failed' ? (
-        <div className="app-alert-warning p-6 shadow-sm">
-          <p className="font-medium text-slate-900">
-            Processing did not finish successfully
-          </p>
-          <p className="mt-2 leading-6">
-            {video.error_message ??
-              'This video could not be prepared for playback. Please review the details below.'}
-          </p>
-        </div>
-      ) : null}
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -126,32 +124,32 @@ export default function VideoDetailPage() {
           </span>
         </div>
 
-        {isPlayable ? (
-          <VideoPlaybackPanel src={playbackUrl!} />
-        ) : showProcessingPanel ? (
-          <ProcessingStatePanel
-            status={video.status}
-            errorMessage={video.error_message}
-          />
-        ) : (
-          <div className="app-card p-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
-                <span className="text-lg">▶</span>
-              </div>
-
-              <div className="mt-5 space-y-2">
-                <h3 className="text-lg font-semibold tracking-tight text-slate-900">
-                  Playback is not available yet
-                </h3>
-                <p className="mx-auto max-w-xl text-sm leading-6 text-slate-500">
-                  The video page is available, but the playback source has not
-                  appeared yet.
-                </p>
-              </div>
+        <div className="app-card p-4 sm:p-6">
+          {isPlayable ? (
+            <VideoPlaybackPanel src={playbackUrl!} />
+          ) : showProcessingPanel ? (
+            <ProcessingStatePanel
+              status={video.status}
+              errorMessage={video.error_message}
+            />
+          ) : (
+            <div className="flex aspect-video items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
+              Playback is not available yet
             </div>
+          )}
+        </div>
+
+        {video.status === 'failed' ? (
+          <div className="app-alert-warning p-6 shadow-sm">
+            <p className="font-medium text-slate-900">
+              Processing did not finish successfully
+            </p>
+            <p className="mt-2 leading-6">
+              {video.error_message ??
+                'This video could not be prepared for playback. Please review the details below.'}
+            </p>
           </div>
-        )}
+        ) : null}
 
         {video.status === 'ready' && !playbackUrl ? (
           <div className="app-alert-warning p-6 shadow-sm">
