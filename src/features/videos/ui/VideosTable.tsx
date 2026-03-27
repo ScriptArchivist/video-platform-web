@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useQueries } from '@tanstack/react-query';
+import { PlayCircle } from 'lucide-react';
 import { getVideoById } from '../api';
 import { videoQueryKeys } from '../queryKeys';
 import type { VideoListItemDTO } from '../types';
@@ -55,32 +56,33 @@ export function VideosTable({ items }: VideosTableProps) {
           <Link
             key={video.id}
             href={`/videos/${video.id}`}
-            className="block h-full rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300"
+            className="block h-full rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-300"
           >
-            <article className="group flex h-full w-full flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md">
-              <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-                <div className="relative h-[200px] w-full shrink-0 overflow-hidden bg-slate-200">
-                  {video.thumbnail_url ? (
-                    <img
-                      src={video.thumbnail_url}
-                      alt={video.title}
-                      className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-[1.02]"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">
-                      No preview
+            <article className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg">
+              <div className="relative h-[210px] w-full shrink-0 overflow-hidden bg-slate-100">
+                {video.thumbnail_url ? (
+                  <img
+                    src={video.thumbnail_url}
+                    alt={video.title}
+                    className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-sm text-slate-400">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 shadow-sm">
+                      <PlayCircle className="h-6 w-6" />
                     </div>
-                  )}
+                    No preview
+                  </div>
+                )}
 
-                  {duration && (
-                    <div className="absolute bottom-3 right-3 rounded-lg bg-black/80 px-2 py-1 text-xs font-medium text-white">
-                      {duration}
-                    </div>
-                  )}
-                </div>
+                {duration ? (
+                  <div className="absolute bottom-3 right-3 rounded-xl bg-black/80 px-2.5 py-1 text-xs font-medium text-white shadow-sm">
+                    {duration}
+                  </div>
+                ) : null}
               </div>
 
-              <div className="mt-4 flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col p-4">
                 <div className="space-y-1">
                   <div className="line-clamp-2 min-h-[48px] text-base font-semibold leading-6 text-slate-900">
                     {video.title}
@@ -93,8 +95,8 @@ export function VideosTable({ items }: VideosTableProps) {
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                     Visibility
                   </div>
                   <div className="mt-2">

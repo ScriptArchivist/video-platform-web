@@ -11,6 +11,7 @@ import {
   PageLoadingState,
   PageNotFoundState,
 } from '@/shared/ui/PageState';
+import { ArrowLeft, Radio } from 'lucide-react';
 
 function resolveLiveHlsUrl(session: {
   hls_url?: string | null;
@@ -36,7 +37,7 @@ export default function WatchLivePage() {
 
   if (!streamKey) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageErrorState
           title="Invalid live stream link"
           description="The requested stream key is not valid."
@@ -47,7 +48,7 @@ export default function WatchLivePage() {
 
   if (sessionQuery.isLoading) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageLoadingState
           title="Opening live stream"
           description="Connecting to the stream and preparing playback..."
@@ -58,7 +59,7 @@ export default function WatchLivePage() {
 
   if (sessionQuery.isError) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageErrorState
           title="Failed to load live stream"
           description={parseApiError(sessionQuery.error)}
@@ -71,7 +72,7 @@ export default function WatchLivePage() {
 
   if (!session) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageNotFoundState
           title="Live stream not found"
           description="This live stream is no longer available."
@@ -86,49 +87,47 @@ export default function WatchLivePage() {
     session.status === 'stopped' || session.status === 'expired';
 
   return (
-    <div className="max-w-6xl space-y-6 p-6">
-      {/* HEADER */}
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="min-w-0 space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            {session.title ?? 'Live stream'}
-          </h1>
-          <p className="text-sm text-slate-500">
-            Stream key: {session.stream_key}
-          </p>
+    <div className="space-y-6">
+      <div className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
+        <div className="min-w-0 space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+            <Radio className="h-3.5 w-3.5" />
+            Live playback
+          </div>
+
+          <div>
+            <h1 className="app-page-title">{session.title ?? 'Live stream'}</h1>
+            <p className="mt-2 text-sm text-slate-500">
+              Stream key: {session.stream_key}
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <LiveStatusBadge status={session.status} />
 
-          <Link
-            href="/live/active"
-            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
+          <Link href="/live/active" className="app-btn-secondary gap-2">
+            <ArrowLeft className="h-4 w-4" />
             Back to active sessions
           </Link>
         </div>
       </div>
 
-      {/* PLAYBACK */}
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            Playback
-          </h2>
+          <h2 className="app-section-title">Playback</h2>
 
           <span className="text-sm text-slate-500">
             {isLive ? 'Live now' : isOffline ? 'Offline' : 'Waiting for stream'}
           </span>
         </div>
 
-        {/* PLAYER */}
         {hlsUrl ? (
           <LivePlayerPanel src={hlsUrl} />
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="app-card p-8">
             <div className="mx-auto max-w-2xl text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
                 <span className="text-lg">▶</span>
               </div>
 
@@ -154,9 +153,8 @@ export default function WatchLivePage() {
         )}
       </section>
 
-      {/* ERROR BLOCK */}
       {session.error ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
+        <div className="app-alert-error p-6 shadow-sm">
           <p className="font-medium text-red-800">Stream error</p>
           <p className="mt-2 leading-6">{session.error}</p>
         </div>

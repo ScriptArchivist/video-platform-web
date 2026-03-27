@@ -12,6 +12,7 @@ import { parseApiError } from '@/shared/api/client';
 import type { VideoVisibility } from '@/features/videos/types';
 import { useToast } from '@/shared/ui/toast/ToastProvider';
 import { PageErrorState, PageLoadingState } from '@/shared/ui/PageState';
+import { ArrowLeft, Save } from 'lucide-react';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -56,7 +57,7 @@ export default function EditVideoPage() {
 
   if (!Number.isFinite(videoId)) {
     return (
-      <div className="max-w-4xl space-y-6 p-6">
+      <div className="max-w-4xl space-y-6">
         <PageErrorState
           title="Invalid video id"
           description="The requested video id is not valid."
@@ -67,7 +68,7 @@ export default function EditVideoPage() {
 
   if (detailQuery.isLoading) {
     return (
-      <div className="max-w-4xl space-y-6 p-6">
+      <div className="max-w-4xl space-y-6">
         <PageLoadingState
           title="Loading video"
           description="Preparing current values for editing."
@@ -78,7 +79,7 @@ export default function EditVideoPage() {
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <div className="max-w-4xl space-y-6 p-6">
+      <div className="max-w-4xl space-y-6">
         <PageErrorState
           title="Failed to load video"
           description={
@@ -129,99 +130,81 @@ export default function EditVideoPage() {
   });
 
   return (
-    <div className="max-w-4xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="max-w-5xl space-y-6">
+      <div className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
         <div className="min-w-0 space-y-2">
-          <p className="text-sm text-slate-500">Video #{videoId}</p>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Edit video
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-slate-500">
+          <p className="text-sm font-medium text-slate-500">Video #{videoId}</p>
+          <h1 className="app-page-title">Edit video</h1>
+          <p className="app-page-description">
             Update video metadata and return to the detail page after saving.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href={`/videos/${videoId}`}
-            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
+          <Link href={`/videos/${videoId}`} className="app-btn-secondary gap-2">
+            <ArrowLeft className="h-4 w-4" />
             Back to detail
           </Link>
         </div>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          Video metadata
-        </h2>
+        <h2 className="app-section-title">Video metadata</h2>
 
-        <form
-          onSubmit={onSubmit}
-          className="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
+        <form onSubmit={onSubmit} className="app-card space-y-5 p-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Title</label>
+            <label className="app-label">Title</label>
             <input
               {...form.register('title')}
               disabled={updateMutation.isPending}
-              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="app-input"
             />
             {form.formState.errors.title ? (
-              <p className="text-sm text-red-700">
-                {form.formState.errors.title.message}
-              </p>
+              <p className="app-error-text">{form.formState.errors.title.message}</p>
             ) : null}
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Description
-            </label>
+            <label className="app-label">Description</label>
             <textarea
               {...form.register('description')}
               disabled={updateMutation.isPending}
-              className="min-h-[120px] w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="app-textarea"
             />
             {form.formState.errors.description ? (
-              <p className="text-sm text-red-700">
+              <p className="app-error-text">
                 {form.formState.errors.description.message}
               </p>
             ) : null}
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Visibility
-            </label>
+            <label className="app-label">Visibility</label>
             <select
               {...form.register('visibility')}
               disabled={updateMutation.isPending}
-              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+              className="app-select"
             >
               <option value="private">private</option>
               <option value="public">public</option>
               <option value="unlisted">unlisted</option>
             </select>
             {form.formState.errors.visibility ? (
-              <p className="text-sm text-red-700">
+              <p className="app-error-text">
                 {form.formState.errors.visibility.message}
               </p>
             ) : null}
           </div>
 
-          {submitError ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {submitError}
-            </div>
-          ) : null}
+          {submitError ? <div className="app-alert-error">{submitError}</div> : null}
 
-          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
+          <div className="app-subtle-divider flex flex-wrap items-center gap-3">
             <button
               type="submit"
               disabled={updateMutation.isPending}
-              className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="app-btn-primary gap-2"
             >
+              <Save className="h-4 w-4" />
               {updateMutation.isPending ? 'Saving...' : 'Save'}
             </button>
 
@@ -229,7 +212,7 @@ export default function EditVideoPage() {
               type="button"
               onClick={() => router.push(`/videos/${videoId}`)}
               disabled={updateMutation.isPending}
-              className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="app-btn-secondary"
             >
               Cancel
             </button>

@@ -16,11 +16,24 @@ const statusClassMap: Record<VideoStatus, string> = {
   failed: 'border-red-200 bg-red-50 text-red-700',
 };
 
+const dotClassMap: Record<VideoStatus, string> = {
+  uploading: 'bg-blue-500',
+  uploaded: 'bg-slate-400',
+  processing: 'bg-amber-500',
+  ready: 'bg-emerald-500',
+  failed: 'bg-red-500',
+};
+
 export function VideoStatusBadge({ status }: { status: VideoStatus }) {
   return (
     <span
-      className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${statusClassMap[status]}`}
+      className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${statusClassMap[status]}`}
     >
+      <span
+        className={`h-2 w-2 rounded-full ${dotClassMap[status]} ${
+          status === 'uploading' || status === 'processing' ? 'animate-pulse' : ''
+        }`}
+      />
       {statusLabelMap[status]}
     </span>
   );

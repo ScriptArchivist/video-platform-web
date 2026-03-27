@@ -11,6 +11,7 @@ import { ProcessingStatePanel } from '@/features/upload/ui/ProcessingStatePanel'
 import { useVideoDetail } from '@/features/videos/hooks/useVideoDetail';
 import { parseApiError } from '@/shared/api/client';
 import { useToast } from '@/shared/ui/toast/ToastProvider';
+import { ArrowLeft, CloudUpload, FileVideo } from 'lucide-react';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -111,140 +112,124 @@ export default function NewVideoPage() {
   const isProcessingVisible = Boolean(createdVideoId && detailQuery.data);
 
   return (
-    <div className="max-w-4xl space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="min-w-0 space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Upload video
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-slate-500">
-            Create metadata, upload a file, and monitor processing until
-            playback is ready.
-          </p>
+    <div className="max-w-5xl space-y-6">
+      <div className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
+        <div className="min-w-0 space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+            <CloudUpload className="h-3.5 w-3.5" />
+            Upload workflow
+          </div>
+
+          <div>
+            <h1 className="app-page-title">Upload video</h1>
+            <p className="app-page-description mt-2">
+              Create metadata, upload a file, and monitor processing until
+              playback is ready.
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href="/videos"
-            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
+          <Link href="/videos" className="app-btn-secondary gap-2">
+            <ArrowLeft className="h-4 w-4" />
             Back to videos
           </Link>
         </div>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          Upload form
-        </h2>
+        <h2 className="app-section-title">Upload form</h2>
 
-        <form
-          onSubmit={onSubmit}
-          className="space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Title</label>
-            <input
-              {...form.register('title')}
-              disabled={isFlowStarted}
-              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
-            />
-            {form.formState.errors.title ? (
-              <p className="text-sm text-red-700">
-                {form.formState.errors.title.message}
-              </p>
-            ) : null}
-          </div>
+        <form onSubmit={onSubmit} className="app-card space-y-5 p-6">
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="space-y-2 lg:col-span-2">
+              <label className="app-label">Title</label>
+              <input
+                {...form.register('title')}
+                disabled={isFlowStarted}
+                className="app-input"
+              />
+              {form.formState.errors.title ? (
+                <p className="app-error-text">{form.formState.errors.title.message}</p>
+              ) : null}
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Description
-            </label>
-            <textarea
-              {...form.register('description')}
-              disabled={isFlowStarted}
-              className="min-h-[120px] w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
-            />
-            {form.formState.errors.description ? (
-              <p className="text-sm text-red-700">
-                {form.formState.errors.description.message}
-              </p>
-            ) : null}
-          </div>
+            <div className="space-y-2 lg:col-span-2">
+              <label className="app-label">Description</label>
+              <textarea
+                {...form.register('description')}
+                disabled={isFlowStarted}
+                className="app-textarea"
+              />
+              {form.formState.errors.description ? (
+                <p className="app-error-text">
+                  {form.formState.errors.description.message}
+                </p>
+              ) : null}
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Visibility
-            </label>
-            <select
-              {...form.register('visibility')}
-              disabled={isFlowStarted}
-              className="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
-            >
-              <option value="private">private</option>
-              <option value="public">public</option>
-              <option value="unlisted">unlisted</option>
-            </select>
-            {form.formState.errors.visibility ? (
-              <p className="text-sm text-red-700">
-                {form.formState.errors.visibility.message}
-              </p>
-            ) : null}
-          </div>
+            <div className="space-y-2">
+              <label className="app-label">Visibility</label>
+              <select
+                {...form.register('visibility')}
+                disabled={isFlowStarted}
+                className="app-select"
+              >
+                <option value="private">private</option>
+                <option value="public">public</option>
+                <option value="unlisted">unlisted</option>
+              </select>
+              {form.formState.errors.visibility ? (
+                <p className="app-error-text">
+                  {form.formState.errors.visibility.message}
+                </p>
+              ) : null}
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Video file
-            </label>
-            <input
-              type="file"
-              accept="video/*"
-              disabled={isFlowStarted}
-              onChange={(event) => {
-                setFile(event.target.files?.[0] ?? null);
-                form.clearErrors('root');
-              }}
-              className="block w-full text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white file:transition hover:file:bg-slate-800 disabled:cursor-not-allowed"
-            />
-            {file ? (
-              <p className="text-sm text-slate-500">
-                Selected file:{' '}
-                <span className="font-medium text-slate-700">{file.name}</span>
-              </p>
-            ) : null}
+            <div className="space-y-2">
+              <label className="app-label">Video file</label>
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
+                <input
+                  type="file"
+                  accept="video/*"
+                  disabled={isFlowStarted}
+                  onChange={(event) => {
+                    setFile(event.target.files?.[0] ?? null);
+                    form.clearErrors('root');
+                  }}
+                  className="block w-full text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-white file:transition hover:file:bg-slate-800 disabled:cursor-not-allowed"
+                />
+
+                {file ? (
+                  <div className="mt-3 flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-600">
+                    <FileVideo className="h-4 w-4 text-slate-500" />
+                    <span>
+                      Selected file:{' '}
+                      <span className="font-medium text-slate-800">{file.name}</span>
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
           </div>
 
           {form.formState.errors.root ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {form.formState.errors.root.message}
-            </div>
+            <div className="app-alert-error">{form.formState.errors.root.message}</div>
           ) : null}
 
-          {submitError ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {submitError}
-            </div>
-          ) : null}
+          {submitError ? <div className="app-alert-error">{submitError}</div> : null}
 
-          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
-            <button
-              type="submit"
-              disabled={isFlowStarted}
-              className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
+          <div className="app-subtle-divider flex flex-wrap items-center gap-3">
+            <button type="submit" disabled={isFlowStarted} className="app-btn-primary">
               {uploadMutation.isPending ? 'Uploading...' : 'Upload'}
             </button>
 
-            <Link
-              href="/videos"
-              className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-            >
+            <Link href="/videos" className="app-btn-secondary">
               Cancel
             </Link>
 
             <span className="text-sm text-slate-500">
-              Upload will start immediately. Processing status will appear
-              below.
+              Upload will start immediately. Processing status will appear below.
             </span>
           </div>
         </form>
@@ -253,11 +238,9 @@ export default function NewVideoPage() {
       {(uploadMutation.isPending || uploadProgress > 0) &&
       createdVideoId === null ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            Upload progress
-          </h2>
+          <h2 className="app-section-title">Upload progress</h2>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="app-card p-6">
             <UploadProgress progress={uploadProgress} />
           </div>
         </section>
@@ -265,27 +248,19 @@ export default function NewVideoPage() {
 
       {isProcessingVisible && detailQuery.data ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            Processing
-          </h2>
+          <h2 className="app-section-title">Processing</h2>
 
           <ProcessingStatePanel
             status={detailQuery.data.status}
             errorMessage={detailQuery.data.error_message}
           />
 
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <Link
-              href={`/videos/${detailQuery.data.id}`}
-              className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
-            >
+          <div className="app-card flex flex-wrap items-center gap-3 p-6">
+            <Link href={`/videos/${detailQuery.data.id}`} className="app-btn-primary">
               Open video
             </Link>
 
-            <Link
-              href="/videos"
-              className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-            >
+            <Link href="/videos" className="app-btn-secondary">
               Back to list
             </Link>
           </div>

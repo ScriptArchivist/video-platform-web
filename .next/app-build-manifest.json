@@ -21,10 +21,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/videos/page.js"
     ],
-    "/(protected)/videos/new/page": [
+    "/(protected)/videos/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(protected)/videos/new/page.js"
+      "static/chunks/app/(protected)/videos/[id]/page.js"
     ],
     "/(protected)/live/page": [
       "static/chunks/webpack.js",
@@ -35,16 +35,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/live/active/page.js"
-    ],
-    "/(protected)/videos/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(protected)/videos/[id]/page.js"
-    ],
-    "/(protected)/videos/[id]/edit/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(protected)/videos/[id]/edit/page.js"
     ],
     "/(protected)/watch/live/[streamKey]/page": [
       "static/chunks/webpack.js",

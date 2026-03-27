@@ -85,7 +85,6 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
     };
   }, [src, retryCount]);
 
-  // 🔁 Auto-retry when stream not ready yet
   useEffect(() => {
     if (!playbackError) return;
 
@@ -97,8 +96,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   }, [playbackError]);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-black shadow-sm">
-      {/* 🔴 LIVE badge */}
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-black shadow-sm">
       <div className="pointer-events-none absolute left-3 top-3 z-10 flex items-center gap-2 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
         <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
         LIVE

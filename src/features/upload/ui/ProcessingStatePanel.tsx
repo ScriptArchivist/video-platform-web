@@ -21,7 +21,7 @@ export function ProcessingStatePanel({
   const isFailed = status === 'failed';
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border border-white/70 bg-white/90 p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
         <div>
           <h3 className="text-base font-semibold text-slate-900">
@@ -37,14 +37,14 @@ export function ProcessingStatePanel({
 
       <div className="mt-5">
         {isFailed ? (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             <p className="font-medium">Processing failed</p>
             <p className="mt-1 leading-6">
               {errorMessage ?? 'Processing failed.'}
             </p>
           </div>
         ) : (
-          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
             <p className="text-sm leading-6 text-slate-600">
               {statusDescriptionMap[status]}
             </p>

@@ -1,80 +1,86 @@
+import { AlertCircle, CircleDashed, SearchX, Loader2 } from 'lucide-react';
+
 interface PageStateProps {
   title: string;
   description?: string;
 }
 
-export function PageLoadingState({ title, description }: PageStateProps) {
+function StateCard({
+  icon,
+  title,
+  description,
+  tone = 'default',
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  tone?: 'default' | 'warning';
+}) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div
+      className={`app-card p-8 ${
+        tone === 'warning' ? 'border-amber-200 bg-amber-50/80' : ''
+      }`}
+    >
       <div className="mx-auto max-w-2xl text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700" />
+        <div
+          className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl ${
+            tone === 'warning'
+              ? 'bg-amber-100 text-amber-700'
+              : 'bg-slate-100 text-slate-500'
+          }`}
+        >
+          {icon}
         </div>
 
         <div className="mt-5 space-y-2">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <p className="text-sm text-slate-500">
-            {description ?? 'Loading data...'}
-          </p>
+          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+            {title}
+          </h2>
+          <p className="text-sm leading-6 text-slate-500">{description}</p>
         </div>
       </div>
     </div>
+  );
+}
+
+export function PageLoadingState({ title, description }: PageStateProps) {
+  return (
+    <StateCard
+      icon={<Loader2 className="h-6 w-6 animate-spin" />}
+      title={title}
+      description={description ?? 'Loading data...'}
+    />
   );
 }
 
 export function PageEmptyState({ title, description }: PageStateProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-          ○
-        </div>
-
-        <div className="mt-5 space-y-2">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <p className="text-sm text-slate-500">
-            {description ?? 'Nothing to show yet.'}
-          </p>
-        </div>
-      </div>
-    </div>
+    <StateCard
+      icon={<CircleDashed className="h-6 w-6" />}
+      title={title}
+      description={description ?? 'Nothing to show yet.'}
+    />
   );
 }
 
 export function PageNotFoundState({ title, description }: PageStateProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-          ?
-        </div>
-
-        <div className="mt-5 space-y-2">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <p className="text-sm text-slate-500">
-            {description ?? 'Not found.'}
-          </p>
-        </div>
-      </div>
-    </div>
+    <StateCard
+      icon={<SearchX className="h-6 w-6" />}
+      title={title}
+      description={description ?? 'Not found.'}
+    />
   );
 }
 
 export function PageErrorState({ title, description }: PageStateProps) {
   return (
-    <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-8 shadow-sm">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-700">
-          !
-        </div>
-
-        <div className="mt-5 space-y-2">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <p className="text-sm text-slate-600">
-            {description ?? 'Something went wrong.'}
-          </p>
-        </div>
-      </div>
-    </div>
+    <StateCard
+      icon={<AlertCircle className="h-6 w-6" />}
+      title={title}
+      description={description ?? 'Something went wrong.'}
+      tone="warning"
+    />
   );
 }

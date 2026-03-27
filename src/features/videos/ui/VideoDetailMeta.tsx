@@ -102,12 +102,16 @@ export function VideoDetailMeta({ video }: VideoDetailMetaProps) {
 
               <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
                 <dt className="mb-1 text-slate-500">Storage limit</dt>
-                <dd className="text-slate-900">{video.owner.storage_limit}</dd>
+                <dd className="text-slate-900">
+                  {video.owner.storage_limit}
+                </dd>
               </div>
 
               <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
                 <dt className="mb-1 text-slate-500">Used storage</dt>
-                <dd className="text-slate-900">{video.owner.used_storage}</dd>
+                <dd className="text-slate-900">
+                  {video.owner.used_storage}
+                </dd>
               </div>
             </div>
           </dl>

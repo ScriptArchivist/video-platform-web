@@ -9,37 +9,46 @@ import {
   PageErrorState,
   PageLoadingState,
 } from '@/shared/ui/PageState';
+import { Radio } from 'lucide-react';
 
 export default function ActiveLiveSessionsPage() {
   const activeQuery = useActiveLiveSessions();
 
   return (
-    <div className="max-w-6xl space-y-6 p-6">
-      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="min-w-0 space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Active live sessions
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-slate-500">
-            View currently active live streams and open a watch page when
-            playback is ready.
-          </p>
+    <div className="space-y-6">
+      <header className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
+        <div className="min-w-0 space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+            <Radio className="h-3.5 w-3.5" />
+            Live monitoring
+          </div>
+
+          <div>
+            <h1 className="app-page-title">Active live sessions</h1>
+            <p className="app-page-description mt-2">
+              View currently active live streams and open a watch page when
+              playback is ready.
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href="/live"
-            className="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
-          >
+          <Link href="/live" className="app-btn-primary">
             Open live studio
           </Link>
         </div>
       </header>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          Sessions
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="app-section-title">Sessions</h2>
+          {activeQuery.data ? (
+            <div className="text-sm text-slate-500">
+              {activeQuery.data.length} session
+              {activeQuery.data.length === 1 ? '' : 's'}
+            </div>
+          ) : null}
+        </div>
 
         {activeQuery.isLoading ? (
           <PageLoadingState

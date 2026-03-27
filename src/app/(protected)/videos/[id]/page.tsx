@@ -14,6 +14,7 @@ import {
   PageLoadingState,
   PageNotFoundState,
 } from '@/shared/ui/PageState';
+import { ArrowLeft, PencilLine } from 'lucide-react';
 
 export default function VideoDetailPage() {
   const params = useParams();
@@ -28,7 +29,7 @@ export default function VideoDetailPage() {
 
   if (!Number.isFinite(videoId)) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageErrorState
           title="This video link is not valid"
           description="The requested video identifier could not be recognized."
@@ -39,7 +40,7 @@ export default function VideoDetailPage() {
 
   if (detailQuery.isLoading) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageLoadingState
           title="Opening video page"
           description="We are loading video details, playback status, and related metadata."
@@ -50,7 +51,7 @@ export default function VideoDetailPage() {
 
   if (detailQuery.isError) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageErrorState
           title="Unable to load this video"
           description={parseApiError(detailQuery.error).message}
@@ -63,7 +64,7 @@ export default function VideoDetailPage() {
 
   if (!video) {
     return (
-      <div className="max-w-6xl space-y-6 p-6">
+      <div className="max-w-6xl space-y-6">
         <PageNotFoundState
           title="Video not found"
           description="This video does not exist anymore or is not available in the current catalog."
@@ -77,31 +78,25 @@ export default function VideoDetailPage() {
   const showProcessingPanel = video.status !== 'ready';
 
   return (
-    <div className="max-w-6xl space-y-6 p-6">
-      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="space-y-6">
+      <header className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
         <div className="min-w-0 space-y-2">
-          <p className="text-sm text-slate-500">Video #{video.id}</p>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            {video.title}
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-slate-500">
+          <p className="text-sm font-medium text-slate-500">Video #{video.id}</p>
+          <h1 className="app-page-title">{video.title}</h1>
+          <p className="app-page-description">
             Review playback, current processing state, and all available
             metadata in one place.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href="/videos"
-            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
+          <Link href="/videos" className="app-btn-secondary gap-2">
+            <ArrowLeft className="h-4 w-4" />
             Back to videos
           </Link>
 
-          <Link
-            href={`/videos/${video.id}/edit`}
-            className="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
+          <Link href={`/videos/${video.id}/edit`} className="app-btn-secondary gap-2">
+            <PencilLine className="h-4 w-4" />
             Edit
           </Link>
 
@@ -110,7 +105,7 @@ export default function VideoDetailPage() {
       </header>
 
       {video.status === 'failed' ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-6 text-sm text-slate-700 shadow-sm">
+        <div className="app-alert-warning p-6 shadow-sm">
           <p className="font-medium text-slate-900">
             Processing did not finish successfully
           </p>
@@ -123,9 +118,7 @@ export default function VideoDetailPage() {
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            Playback
-          </h2>
+          <h2 className="app-section-title">Playback</h2>
           <span className="text-sm text-slate-500">
             {video.status === 'ready'
               ? 'Playback is ready.'
@@ -141,9 +134,9 @@ export default function VideoDetailPage() {
             errorMessage={video.error_message}
           />
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="app-card p-8">
             <div className="mx-auto max-w-2xl text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
                 <span className="text-lg">▶</span>
               </div>
 
@@ -161,7 +154,7 @@ export default function VideoDetailPage() {
         )}
 
         {video.status === 'ready' && !playbackUrl ? (
-          <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-6 text-sm text-slate-700 shadow-sm">
+          <div className="app-alert-warning p-6 shadow-sm">
             <p className="font-medium text-slate-900">Playback link is missing</p>
             <p className="mt-2 leading-6">
               The video is marked as ready, but the playback URL is not
@@ -172,9 +165,7 @@ export default function VideoDetailPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-          Details
-        </h2>
+        <h2 className="app-section-title">Details</h2>
         <VideoDetailMeta video={video} />
       </section>
     </div>

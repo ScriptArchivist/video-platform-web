@@ -13,6 +13,7 @@ import {
   Square,
   Video,
   Wifi,
+  ArrowRight,
 } from 'lucide-react';
 
 import { useCreateLiveSession } from '@/features/live/hooks/useCreateLiveSession';
@@ -120,7 +121,8 @@ export default function LiveStudioPage() {
         title: 'Stream stopped',
         description:
           'This live session has been stopped and is no longer broadcasting.',
-        nextStep: 'Next step: create a new session when you are ready to go live again.',
+        nextStep:
+          'Next step: create a new session when you are ready to go live again.',
         toneClass: 'border-slate-200 bg-slate-50',
       };
     }
@@ -128,8 +130,7 @@ export default function LiveStudioPage() {
     if (currentSession.status === 'expired') {
       return {
         title: 'Session expired',
-        description:
-          'The session expired before streaming was completed.',
+        description: 'The session expired before streaming was completed.',
         nextStep: 'Next step: create a new session and reconnect OBS.',
         toneClass: 'border-amber-200 bg-amber-50',
       };
@@ -206,7 +207,7 @@ export default function LiveStudioPage() {
       <button
         type="button"
         onClick={() => handleCopy(value, copyKey)}
-        className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+        className="app-btn-secondary h-9 gap-2 px-3"
       >
         {copied ? (
           <>
@@ -225,41 +226,36 @@ export default function LiveStudioPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="min-w-0 space-y-2">
+      <header className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
+        <div className="min-w-0 space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
             <Radio className="h-3.5 w-3.5" />
             Live workflow
           </div>
 
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-              Live Studio
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+            <h1 className="app-page-title">Live Studio</h1>
+            <p className="app-page-description mt-2">
               Create a session, copy the streaming credentials into OBS, start
               broadcasting, and monitor the stream from one screen.
             </p>
           </div>
         </div>
 
-        <Link
-          href="/live/active"
-          className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-        >
+        <Link href="/live/active" className="app-btn-secondary gap-2">
           Active sessions
           <ExternalLink className="h-4 w-4" />
         </Link>
       </header>
 
-      <section className="grid gap-3 md:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-3">
         {steps.map((step, index) => {
           const Icon = step.icon;
 
           return (
             <div
               key={step.title}
-              className={`rounded-2xl border bg-white p-4 shadow-sm transition ${
+              className={`rounded-2xl border bg-white/90 p-5 shadow-sm transition ${
                 step.isActive
                   ? 'border-slate-900 ring-1 ring-slate-900/10'
                   : 'border-slate-200'
@@ -267,7 +263,7 @@ export default function LiveStudioPage() {
             >
               <div className="flex items-center gap-3">
                 <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                  className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
                     step.isDone
                       ? 'bg-emerald-100 text-emerald-700'
                       : step.isActive
@@ -286,7 +282,7 @@ export default function LiveStudioPage() {
                   <div className="text-sm font-semibold text-slate-900">
                     {index + 1}. {step.title}
                   </div>
-                  <div className="text-sm text-slate-500">
+                  <div className="text-sm leading-6 text-slate-500">
                     {step.description}
                   </div>
                 </div>
@@ -296,11 +292,9 @@ export default function LiveStudioPage() {
         })}
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="app-card p-6">
         <div className="mb-5">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-            Create session
-          </h2>
+          <h2 className="app-section-title">Create session</h2>
           <p className="mt-1 text-sm text-slate-500">
             Create a live session to receive RTMP credentials for OBS.
           </p>
@@ -326,45 +320,33 @@ export default function LiveStudioPage() {
 
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
-                Title (optional)
-              </label>
+              <label className="app-label">Title (optional)</label>
               <input
                 {...form.register('title')}
                 autoComplete="off"
                 disabled={createMutation.isPending}
                 placeholder="My live stream"
-                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+                className="app-input"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
-                Stream key (optional)
-              </label>
+              <label className="app-label">Stream key (optional)</label>
               <input
                 {...form.register('stream_key')}
                 autoComplete="off"
                 spellCheck={false}
                 disabled={createMutation.isPending}
                 placeholder="Leave empty to generate automatically"
-                className="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 disabled:cursor-not-allowed disabled:bg-slate-50"
+                className="app-input"
               />
             </div>
           </div>
 
-          {submitError ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {submitError}
-            </div>
-          ) : null}
+          {submitError ? <div className="app-alert-error">{submitError}</div> : null}
 
-          <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
-            <button
-              type="submit"
-              disabled={createMutation.isPending}
-              className="inline-flex h-11 items-center rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
+          <div className="app-subtle-divider flex flex-wrap items-center gap-3">
+            <button type="submit" disabled={createMutation.isPending} className="app-btn-primary">
               {createMutation.isPending ? 'Creating...' : 'Create live session'}
             </button>
 
@@ -386,9 +368,7 @@ export default function LiveStudioPage() {
         <section className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold tracking-tight text-slate-900">
-                Live session
-              </h2>
+              <h2 className="app-section-title">Live session</h2>
               <p className="mt-1 text-sm text-slate-500">
                 Session details, current status, and the next action.
               </p>
@@ -397,21 +377,20 @@ export default function LiveStudioPage() {
             <LiveStatusBadge status={currentSession.status} />
           </div>
 
-          <div
-            className={`rounded-2xl border p-5 ${sessionGuide.toneClass}`}
-          >
+          <div className={`rounded-2xl border p-5 ${sessionGuide.toneClass}`}>
             <h3 className="text-sm font-semibold text-slate-900">
               What to do now
             </h3>
             <p className="mt-2 text-sm leading-6 text-slate-700">
               {sessionGuide.description}
             </p>
-            <div className="mt-3 text-sm font-medium text-slate-900">
+            <div className="mt-3 flex items-center gap-2 text-sm font-medium text-slate-900">
+              <ArrowRight className="h-4 w-4" />
               {sessionGuide.nextStep}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="app-card p-6">
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
                 <div className="flex items-start justify-between gap-3">
@@ -541,23 +520,18 @@ export default function LiveStudioPage() {
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Actions
-                </h3>
+                <h3 className="text-sm font-semibold text-slate-900">Actions</h3>
 
                 <div className="mt-4 space-y-3">
                   <Link
                     href={`/watch/live/${currentSession.stream_key}`}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    className="app-btn-secondary w-full gap-2"
                   >
                     Open player
                     <ExternalLink className="h-4 w-4" />
                   </Link>
 
-                  <Link
-                    href="/live/active"
-                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-                  >
+                  <Link href="/live/active" className="app-btn-secondary w-full">
                     View active sessions
                   </Link>
 
@@ -568,7 +542,7 @@ export default function LiveStudioPage() {
                       setSubmitError(null);
                       setIsStopDialogOpen(true);
                     }}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:opacity-50"
+                    className="app-btn-danger w-full gap-2"
                   >
                     <Square className="h-4 w-4" />
                     {stopMutation.isPending ? 'Stopping...' : 'Stop live'}
