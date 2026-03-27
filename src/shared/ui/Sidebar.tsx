@@ -13,15 +13,30 @@ const items = [
 ];
 
 function isItemActive(pathname: string, href: string) {
+  if (href === '/videos/new') {
+    return pathname === '/videos/new';
+  }
+
   if (href === '/videos') {
-    return pathname === '/videos' || pathname.startsWith('/videos/');
+    return (
+      pathname === '/videos' ||
+      (/^\/videos\/[^/]+(\/edit)?$/.test(pathname) && pathname !== '/videos/new')
+    );
+  }
+
+  if (href === '/live/active') {
+    return pathname === '/live/active';
   }
 
   if (href === '/live') {
     return pathname === '/live';
   }
 
-  return pathname === href || pathname.startsWith(`${href}/`);
+  if (href === '/profile') {
+    return pathname === '/profile';
+  }
+
+  return pathname === href;
 }
 
 export function Sidebar() {
