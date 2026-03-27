@@ -1,16 +1,41 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface LivePlayerPanelProps {
   src: string;
 }
 
+function withCacheBuster(src: string, token: number) {
+  try {
+    const url = new URL(src, window.location.origin);
+    url.searchParams.set('_live', String(token));
+    return url.toString();
+  } catch {
+    const separator = src.includes('?') ? '&' : '?';
+    return `${src}${separator}_live=${token}`;
+  }
+}
+
 export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [playbackError, setPlaybackError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  const resolvedSrc = useMemo(() => withCacheBuster(src, reloadToken), [src, reloadToken]);
+
+  useEffect(() => {
+    if (isVideoReady) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setReloadToken((value) => value + 1);
+    }, 3000);
+
+    return () => window.clearTimeout(timer);
+  }, [isVideoReady, reloadToken]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -20,57 +45,123 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
     let hlsInstance: any = null;
 
     setPlaybackError(null);
-    setIsLoading(true);
+    setIsVideoReady(false);
 
     video.pause();
     video.removeAttribute('src');
     video.load();
 
-    const handleReady = async () => {
-      setIsLoading(false);
+    const revealVideo = async () => {
+      if (isDisposed) return;
+
+      const hasActualVideo =
+        video.readyState >= 2 &&
+        video.videoWidth > 0 &&
+        video.videoHeight > 0;
+
+      if (!hasActualVideo) {
+        return;
+      }
+
+      setPlaybackError(null);
+      setIsVideoReady(true);
 
       try {
         await video.play();
       } catch {}
     };
 
-    const init = async () => {
-      if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = src;
-        video.onloadeddata = handleReady;
+    const handleLoadedData = () => {
+      void revealVideo();
+    };
+
+    const handleCanPlay = () => {
+      void revealVideo();
+    };
+
+    const handlePlaying = () => {
+      void revealVideo();
+    };
+
+    const handleError = () => {
+      if (isDisposed) return;
+      setIsVideoReady(false);
+      setPlaybackError('Waiting for video from OBS...');
+    };
+
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('playing', handlePlaying);
+    video.addEventListener('error', handleError);
+
+    const initNativeHls = async () => {
+      video.src = resolvedSrc;
+
+      try {
+        await video.play();
+      } catch {}
+    };
+
+    const initHlsJs = async () => {
+      const HlsModule = await import('hls.js');
+      const Hls = HlsModule.default;
+
+      if (isDisposed) return;
+
+      if (!Hls.isSupported()) {
+        setPlaybackError('HLS is not supported in this browser.');
         return;
       }
 
-      try {
-        const HlsModule = await import('hls.js');
-        const Hls = HlsModule.default;
+      const hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
+      });
 
-        if (isDisposed) return;
+      hlsInstance = hls;
+      hls.loadSource(resolvedSrc);
+      hls.attachMedia(video);
 
-        if (!Hls.isSupported()) {
-          setPlaybackError('HLS is not supported in this browser.');
+      hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+        try {
+          await video.play();
+        } catch {}
+      });
+
+      hls.on(Hls.Events.LEVEL_LOADED, () => {
+        void revealVideo();
+      });
+
+      hls.on(Hls.Events.FRAG_BUFFERED, () => {
+        void revealVideo();
+      });
+
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (!data?.fatal) {
           return;
         }
 
-        const hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-        });
+        setIsVideoReady(false);
+        setPlaybackError('Waiting for video from OBS...');
 
-        hlsInstance = hls;
-        hls.loadSource(src);
-        hls.attachMedia(video);
+        try {
+          hls.destroy();
+        } catch {}
+      });
+    };
 
-        hls.on(Hls.Events.MANIFEST_PARSED, handleReady);
+    const init = async () => {
+      try {
+        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          await initNativeHls();
+          return;
+        }
 
-        hls.on(Hls.Events.ERROR, (_event, data) => {
-          if (data?.fatal) {
-            setPlaybackError('Failed to load live stream.');
-          }
-        });
+        await initHlsJs();
       } catch {
         if (!isDisposed) {
-          setPlaybackError('Failed to initialize player.');
+          setIsVideoReady(false);
+          setPlaybackError('Waiting for video from OBS...');
         }
       }
     };
@@ -79,21 +170,25 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
 
     return () => {
       isDisposed = true;
+
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('playing', handlePlaying);
+      video.removeEventListener('error', handleError);
+
+      try {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+      } catch {}
+
       if (hlsInstance) {
-        hlsInstance.destroy();
+        try {
+          hlsInstance.destroy();
+        } catch {}
       }
     };
-  }, [src, retryCount]);
-
-  useEffect(() => {
-    if (!playbackError) return;
-
-    const timer = setTimeout(() => {
-      setRetryCount((c) => c + 1);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [playbackError]);
+  }, [resolvedSrc]);
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-black shadow-sm">
@@ -102,11 +197,11 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         LIVE
       </div>
 
-      {isLoading && (
+      {!isVideoReady ? (
         <div className="flex aspect-video items-center justify-center text-sm text-slate-400">
-          Connecting to live stream...
+          Waiting for video from OBS...
         </div>
-      )}
+      ) : null}
 
       <video
         ref={videoRef}
@@ -114,17 +209,17 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         autoPlay
         playsInline
         muted
-        className={`aspect-video w-full ${isLoading ? 'hidden' : ''}`}
+        className={`aspect-video w-full bg-black ${isVideoReady ? 'block' : 'hidden'}`}
       />
 
-      {playbackError && (
-        <div className="border-t border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      {playbackError && !isVideoReady ? (
+        <div className="border-t border-slate-800 bg-slate-950 p-4 text-sm text-slate-400">
           {playbackError}
-          <div className="mt-1 text-xs text-red-500">
-            Retrying automatically...
+          <div className="mt-1 text-xs text-slate-500">
+            Reconnecting automatically...
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
