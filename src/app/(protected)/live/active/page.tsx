@@ -9,7 +9,7 @@ import {
   PageErrorState,
   PageLoadingState,
 } from '@/shared/ui/PageState';
-import { Radio } from 'lucide-react';
+import { Radio, Upload, PlaySquare } from 'lucide-react';
 
 export default function ActiveLiveSessionsPage() {
   const activeQuery = useActiveLiveSessions();
@@ -17,7 +17,7 @@ export default function ActiveLiveSessionsPage() {
   return (
     <div className="flex min-h-[calc(100dvh-124px)] flex-col gap-5">
       <header className="app-card p-5 sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col gap-4">
           <div className="min-w-0 space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
               <Radio className="h-3.5 w-3.5" />
@@ -34,8 +34,19 @@ export default function ActiveLiveSessionsPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Link href="/live" className="app-btn-primary">
-              Open live studio
+            <Link href="/videos/new" className="app-btn-secondary gap-2">
+              <Upload className="h-4 w-4" />
+              Upload video
+            </Link>
+
+            <Link href="/live" className="app-btn-secondary gap-2">
+              <Radio className="h-4 w-4" />
+              Live Studio
+            </Link>
+
+            <Link href="/live/active" className="app-btn-primary gap-2">
+              <PlaySquare className="h-4 w-4" />
+              Active Live
             </Link>
           </div>
         </div>
