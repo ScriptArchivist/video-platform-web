@@ -35,7 +35,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
       window.setTimeout(() => {
         removeToast(id);
-      }, 3000);
+      }, 3200);
     },
     [removeToast],
   );
@@ -56,18 +56,18 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto overflow-hidden rounded-2xl border shadow-xl backdrop-blur ${
+              className={`pointer-events-auto overflow-hidden rounded-3xl border bg-white/95 shadow-2xl backdrop-blur transition-all ${
                 isSuccess
-                  ? 'border-emerald-200 bg-white text-slate-800'
-                  : 'border-red-200 bg-white text-slate-800'
+                  ? 'border-emerald-200/80'
+                  : 'border-red-200/80'
               }`}
             >
               <div className="flex items-start gap-3 p-4">
                 <div
-                  className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                  className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border ${
                     isSuccess
-                      ? 'bg-emerald-50 text-emerald-600'
-                      : 'bg-red-50 text-red-600'
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-600'
+                      : 'border-red-200 bg-red-50 text-red-600'
                   }`}
                 >
                   {isSuccess ? (
@@ -89,17 +89,22 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 <button
                   type="button"
                   onClick={() => removeToast(toast.id)}
-                  className="rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-transparent text-slate-400 transition hover:border-slate-200 hover:bg-slate-50 hover:text-slate-600"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
 
-              <div
-                className={`h-1 w-full ${
-                  isSuccess ? 'bg-emerald-500/80' : 'bg-red-500/80'
-                }`}
-              />
+              <div className="px-4 pb-4">
+                <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className={`h-full rounded-full ${
+                      isSuccess ? 'bg-emerald-500/80' : 'bg-red-500/80'
+                    }`}
+                    style={{ width: '100%' }}
+                  />
+                </div>
+              </div>
             </div>
           );
         })}
