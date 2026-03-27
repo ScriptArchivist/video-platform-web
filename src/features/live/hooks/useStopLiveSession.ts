@@ -18,6 +18,10 @@ export function useStopLiveSession(streamKey?: string) {
         await queryClient.invalidateQueries({
           queryKey: liveQueryKeys.session(streamKey),
         });
+
+        queryClient.removeQueries({
+          queryKey: liveQueryKeys.session(streamKey),
+        });
       }
     },
   });

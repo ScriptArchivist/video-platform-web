@@ -28,6 +28,7 @@ export function DeleteVideoButton({ videoId }: DeleteVideoButtonProps) {
       showSuccess('Deleted successfully');
       setIsDialogOpen(false);
       router.push('/videos');
+      router.refresh();
     } catch (error) {
       const parsed = parseApiError(error).message;
       setErrorMessage(parsed);
@@ -45,7 +46,7 @@ export function DeleteVideoButton({ videoId }: DeleteVideoButtonProps) {
             setIsDialogOpen(true);
           }}
           disabled={deleteMutation.isPending}
-          className="inline-flex h-11 items-center gap-2 rounded-2xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+          className="app-btn-danger gap-2"
         >
           <Trash2 className="h-4 w-4" />
           {deleteMutation.isPending ? 'Deleting...' : 'Delete video'}

@@ -78,7 +78,7 @@ export default function VideoDetailPage() {
   const showProcessingPanel = video.status !== 'ready';
 
   return (
-    <div className="flex min-h-[calc(100dvh-124px)] flex-col gap-5">
+    <div className="flex min-h-[calc(100dvh-124px)] flex-col gap-4 xl:overflow-hidden">
       <header className="app-card p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 space-y-3">
@@ -113,8 +113,8 @@ export default function VideoDetailPage() {
         </div>
       </header>
 
-      <div className="grid min-h-0 flex-1 gap-5 xl:grid-cols-[minmax(0,1.55fr)_380px]">
-        <section className="space-y-3">
+      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[minmax(0,1.55fr)_360px]">
+        <section className="flex min-h-0 flex-col gap-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="app-section-title">Playback</h2>
             <span className="text-sm text-slate-500">
@@ -124,8 +124,8 @@ export default function VideoDetailPage() {
             </span>
           </div>
 
-          <div className="app-card p-4 sm:p-5">
-            <div className="flex min-h-[360px] items-center justify-center">
+          <div className="app-card flex min-h-0 flex-1 p-4 sm:p-5">
+            <div className="flex min-h-[260px] w-full flex-1 items-center justify-center xl:min-h-0">
               {isPlayable ? (
                 <div className="w-full">
                   <VideoPlaybackPanel src={playbackUrl!} />
@@ -168,7 +168,7 @@ export default function VideoDetailPage() {
           ) : null}
         </section>
 
-        <section className="min-h-0 space-y-3">
+        <section className="min-h-0 space-y-3 xl:overflow-auto">
           <h2 className="app-section-title">Details</h2>
           <VideoDetailMeta video={video} />
         </section>

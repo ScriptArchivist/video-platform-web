@@ -12,12 +12,24 @@ const items = [
   { href: '/profile', label: 'Profile', icon: User },
 ];
 
+function isItemActive(pathname: string, href: string) {
+  if (href === '/videos') {
+    return pathname === '/videos' || pathname.startsWith('/videos/');
+  }
+
+  if (href === '/live') {
+    return pathname === '/live';
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
     <aside className="hidden w-[260px] shrink-0 border-r border-slate-200 bg-white/80 backdrop-blur lg:flex lg:flex-col">
-      <div className="px-6 py-6 border-b border-slate-200">
+      <div className="border-b border-slate-200 px-6 py-6">
         <div className="text-xl font-semibold tracking-tight">
           Pring Eye
         </div>
@@ -26,7 +38,7 @@ export function Sidebar() {
       <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
         {items.map((item) => {
           const Icon = item.icon;
-          const active = pathname.startsWith(item.href);
+          const active = isItemActive(pathname, item.href);
 
           return (
             <Link

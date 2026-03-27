@@ -32,7 +32,14 @@ export function VideoPlaybackPanel({ src }: VideoPlaybackPanelProps) {
 
   return (
     <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-black shadow-sm">
-      <video ref={videoRef} controls className="aspect-video w-full" />
+      <div className="aspect-video max-h-[calc(100dvh-320px)] w-full xl:max-h-[calc(100dvh-300px)]">
+        <video
+          ref={videoRef}
+          controls
+          playsInline
+          className="h-full w-full bg-black"
+        />
+      </div>
     </div>
   );
 }
