@@ -16,38 +16,6 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
   const hasPlayback = Boolean(session.hls_url);
   const canWatch = Boolean(isStarted || hasPlayback);
 
-  function getStatusText() {
-    if (isStarted && hasPlayback) {
-      return 'Live now • Playback available';
-    }
-
-    if (isStarted && !hasPlayback) {
-      return 'Live now • Preparing playback...';
-    }
-
-    if (!isStarted && hasPlayback) {
-      return 'Playback ready';
-    }
-
-    return 'Waiting for stream';
-  }
-
-  function getDescription() {
-    if (isStarted && hasPlayback) {
-      return 'The stream is live and ready to watch.';
-    }
-
-    if (isStarted && !hasPlayback) {
-      return 'The stream has started, but playback is still initializing. This usually takes a few seconds.';
-    }
-
-    if (!isStarted && hasPlayback) {
-      return 'Playback is ready. You can open the stream.';
-    }
-
-    return 'The streamer has not started broadcasting yet.';
-  }
-
   return (
     <Link
       href={`/watch/live/${session.stream_key}`}
@@ -103,16 +71,6 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
           </div>
 
           <LiveStatusBadge status={status as any} />
-        </div>
-
-        <div className="mt-4 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <div className="text-sm font-medium text-slate-900">
-            {getStatusText()}
-          </div>
-
-          <p className="text-sm leading-6 text-slate-600">
-            {getDescription()}
-          </p>
         </div>
       </article>
     </Link>
