@@ -45,7 +45,7 @@ export function VideosTable({ items }: VideosTableProps) {
   });
 
   return (
-    <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {items.map((video, index) => {
         const duration = formatDuration(video.duration);
         const detailVideo = ownerQueries[index].data;
@@ -56,10 +56,10 @@ export function VideosTable({ items }: VideosTableProps) {
           <Link
             key={video.id}
             href={`/videos/${video.id}`}
-            className="block h-full rounded-2xl focus:outline-none focus:ring-2 focus:ring-slate-300"
+            className="block h-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-200"
           >
-            <article className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg">
-              <div className="relative h-[210px] w-full shrink-0 overflow-hidden bg-slate-100">
+            <article className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl">
+              <div className="relative h-[220px] w-full shrink-0 overflow-hidden bg-slate-100">
                 {video.thumbnail_url ? (
                   <img
                     src={video.thumbnail_url}
@@ -82,9 +82,9 @@ export function VideosTable({ items }: VideosTableProps) {
                 ) : null}
               </div>
 
-              <div className="flex flex-1 flex-col p-4">
-                <div className="space-y-1">
-                  <div className="line-clamp-2 min-h-[48px] text-base font-semibold leading-6 text-slate-900">
+              <div className="flex flex-1 flex-col p-5">
+                <div className="space-y-1.5">
+                  <div className="line-clamp-2 min-h-[52px] text-base font-semibold leading-6 text-slate-900">
                     {video.title}
                   </div>
 

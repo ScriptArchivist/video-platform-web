@@ -1,20 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Check,
-  Copy,
-  ExternalLink,
-  Radio,
-  Square,
-  Video,
-  Wifi,
-  ArrowRight,
-} from 'lucide-react';
+import { Check, Copy, Radio, Square } from 'lucide-react';
 
 import { useCreateLiveSession } from '@/features/live/hooks/useCreateLiveSession';
 import { useLiveSession } from '@/features/live/hooks/useLiveSession';
@@ -23,7 +14,6 @@ import { LivePlayerPanel } from '@/features/live/ui/LivePlayerPanel';
 import { LiveStatusBadge } from '@/features/live/ui/LiveStatusBadge';
 import { parseApiError } from '@/shared/api/client';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
-import { PageErrorState } from '@/shared/ui/PageState';
 import { useToast } from '@/shared/ui/toast/ToastProvider';
 
 const schema = z.object({
@@ -76,40 +66,48 @@ export default function LiveStudioPage() {
   });
 
   const currentSession = sessionQuery.data;
-
-  const hlsUrl =
-    currentSession?.hls_url ??
-    sessionMeta?.hls_url ??
-    null;
-
-  const canShowPlayer =
-    currentSession?.status === 'started' && Boolean(hlsUrl);
+  const hlsUrl = currentSession?.hls_url ?? sessionMeta?.hls_url ?? null;
+  const canShowPlayer = currentSession?.status === 'started' && Boolean(hlsUrl);
 
   async function handleCopy(value: string, key: string) {
-    await navigator.clipboard.writeText(value);
-    setCopiedValue(key);
-    showSuccess('Copied');
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedValue(key);
+      showSuccess('Copied');
 
-    setTimeout(() => {
-      setCopiedValue(null);
-    }, 1500);
+      window.setTimeout(() => {
+        setCopiedValue(null);
+      }, 1500);
+    } catch {
+      showError('Failed to copy');
+    }
   }
 
   function CopyButton({ value, id }: { value: string; id: string }) {
     return (
       <button
+        type="button"
         onClick={() => handleCopy(value, id)}
-        className="app-btn-secondary px-3 h-9"
+        className="app-btn-secondary h-9 px-3"
       >
-        {copiedValue === id ? 'Copied' : 'Copy'}
+        {copiedValue === id ? (
+          <>
+            <Check className="h-4 w-4" />
+            Copied
+          </>
+        ) : (
+          <>
+            <Copy className="h-4 w-4" />
+            Copy
+          </>
+        )}
       </button>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* HEADER */}
-      <div className="app-card p-6 sm:p-7">
+    <div className="flex min-h-[calc(100dvh-124px)] flex-col gap-4">
+      <div className="app-card p-5 sm:p-6">
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-xs text-red-700">
             <Radio className="h-3.5 w-3.5" />
@@ -123,103 +121,137 @@ export default function LiveStudioPage() {
         </div>
       </div>
 
-      {/* MAIN GRID */}
-      <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        {/* LEFT */}
-        <div className="space-y-6">
-          {/* PLAYER */}
-          <div className="app-card p-4 sm:p-6">
+      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[minmax(0,1.6fr)_420px]">
+        <div className="app-card min-h-0 p-4 sm:p-5">
+          <div className="flex h-full min-h-[360px] items-center justify-center">
             {canShowPlayer ? (
-              <LivePlayerPanel src={hlsUrl!} />
+              <div className="w-full">
+                <LivePlayerPanel src={hlsUrl!} />
+              </div>
             ) : (
-              <div className="flex aspect-video items-center justify-center text-sm text-slate-500">
+              <div className="flex aspect-video w-full items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
                 Waiting for live stream...
               </div>
             )}
           </div>
+        </div>
 
-          {/* CREATE FORM */}
-          {!currentSession && (
-            <div className="app-card p-6">
-              <h2 className="app-section-title">Create session</h2>
+        <div className="grid min-h-0 gap-4">
+          {!currentSession ? (
+            <>
+              <div className="app-card p-5 sm:p-6">
+                <h2 className="app-section-title">Create session</h2>
 
-              <form onSubmit={onSubmit} className="mt-5 space-y-4">
-                <input
-                  {...form.register('title')}
-                  placeholder="Stream title"
-                  className="app-input"
-                />
-
-                <input
-                  {...form.register('stream_key')}
-                  placeholder="Custom stream key (optional)"
-                  className="app-input"
-                />
-
-                {submitError && (
-                  <div className="app-alert-error">{submitError}</div>
-                )}
-
-                <button className="app-btn-primary w-full h-11">
-                  Create session
-                </button>
-              </form>
-            </div>
-          )}
-
-          {/* STREAM DATA */}
-          {currentSession && sessionMeta && (
-            <div className="app-card p-6 space-y-4">
-              <h2 className="app-section-title">Streaming setup</h2>
-
-              <div className="space-y-3">
-                <div className="app-inset p-4">
-                  <div className="flex justify-between">
-                    <span>RTMP URL</span>
-                    <CopyButton value={sessionMeta.rtmp_url} id="rtmp" />
-                  </div>
-                  <div className="mt-2 font-mono text-sm break-all">
-                    {sessionMeta.rtmp_url}
-                  </div>
-                </div>
-
-                <div className="app-inset p-4">
-                  <div className="flex justify-between">
-                    <span>Stream key</span>
-                    <CopyButton
-                      value={currentSession.stream_key}
-                      id="key"
+                <form onSubmit={onSubmit} className="mt-4 space-y-4">
+                  <div className="space-y-2">
+                    <label className="app-label">Title</label>
+                    <input
+                      {...form.register('title')}
+                      placeholder="Stream title"
+                      className="app-input"
                     />
                   </div>
-                  <div className="mt-2 font-mono text-sm break-all">
-                    {currentSession.stream_key}
+
+                  <div className="space-y-2">
+                    <label className="app-label">Custom stream key</label>
+                    <input
+                      {...form.register('stream_key')}
+                      placeholder="Optional"
+                      className="app-input"
+                    />
+                  </div>
+
+                  {submitError ? (
+                    <div className="app-alert-error">{submitError}</div>
+                  ) : null}
+
+                  <button
+                    type="submit"
+                    disabled={createMutation.isPending}
+                    className="app-btn-primary h-11 w-full"
+                  >
+                    {createMutation.isPending ? 'Creating...' : 'Create session'}
+                  </button>
+                </form>
+              </div>
+
+              <div className="app-card p-5 sm:p-6">
+                <h2 className="app-section-title">How it works</h2>
+
+                <div className="mt-4 space-y-3">
+                  <div className="app-inset p-4 text-sm text-slate-700">
+                    1. Create a live session.
+                  </div>
+                  <div className="app-inset p-4 text-sm text-slate-700">
+                    2. Paste RTMP credentials into OBS.
+                  </div>
+                  <div className="app-inset p-4 text-sm text-slate-700">
+                    3. Start streaming and monitor playback here.
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            </>
+          ) : (
+            <>
+              <div className="app-card p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="app-section-title">Session</h2>
+                  <LiveStatusBadge status={currentSession.status} />
+                </div>
 
-        {/* RIGHT */}
-        <div className="space-y-6">
-          {currentSession && (
-            <div className="app-card p-6 space-y-4">
-              <LiveStatusBadge status={currentSession.status} />
+                <div className="mt-4 space-y-3">
+                  <Link
+                    href={`/watch/live/${currentSession.stream_key}`}
+                    className="app-btn-secondary w-full"
+                  >
+                    Open player
+                  </Link>
 
-              <button
-                onClick={() => setIsStopDialogOpen(true)}
-                className="app-btn-danger w-full"
-              >
-                Stop live
-              </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsStopDialogOpen(true)}
+                    className="app-btn-danger w-full"
+                  >
+                    <Square className="h-4 w-4" />
+                    Stop live
+                  </button>
+                </div>
+              </div>
 
-              <Link
-                href={`/watch/live/${currentSession.stream_key}`}
-                className="app-btn-secondary w-full"
-              >
-                Open player
-              </Link>
-            </div>
+              <div className="app-card p-5 sm:p-6">
+                <h2 className="app-section-title">Streaming setup</h2>
+
+                <div className="mt-4 space-y-3">
+                  <div className="app-inset p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-sm font-medium text-slate-700">
+                        RTMP URL
+                      </span>
+                      <CopyButton value={sessionMeta.rtmp_url} id="rtmp" />
+                    </div>
+                    <div className="mt-3 break-all font-mono text-sm text-slate-800">
+                      {sessionMeta.rtmp_url}
+                    </div>
+                  </div>
+
+                  <div className="app-inset p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-sm font-medium text-slate-700">
+                        Stream key
+                      </span>
+                      <CopyButton value={currentSession.stream_key} id="key" />
+                    </div>
+                    <div className="mt-3 break-all font-mono text-sm text-slate-800">
+                      {currentSession.stream_key}
+                    </div>
+                  </div>
+                </div>
+
+                {submitError ? (
+                  <div className="app-alert-error mt-4">{submitError}</div>
+                ) : null}
+              </div>
+            </>
           )}
         </div>
       </div>

@@ -15,31 +15,33 @@ export default function ActiveLiveSessionsPage() {
   const activeQuery = useActiveLiveSessions();
 
   return (
-    <div className="space-y-6">
-      <header className="app-card flex flex-wrap items-start justify-between gap-4 p-6 sm:p-7">
-        <div className="min-w-0 space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
-            <Radio className="h-3.5 w-3.5" />
-            Live monitoring
+    <div className="flex min-h-[calc(100dvh-124px)] flex-col gap-5">
+      <header className="app-card p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+              <Radio className="h-3.5 w-3.5" />
+              Live monitoring
+            </div>
+
+            <div>
+              <h1 className="app-page-title">Active live sessions</h1>
+              <p className="app-page-description mt-2">
+                View currently active live streams and open a watch page when
+                playback is ready.
+              </p>
+            </div>
           </div>
 
-          <div>
-            <h1 className="app-page-title">Active live sessions</h1>
-            <p className="app-page-description mt-2">
-              View currently active live streams and open a watch page when
-              playback is ready.
-            </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href="/live" className="app-btn-primary">
+              Open live studio
+            </Link>
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <Link href="/live" className="app-btn-primary">
-            Open live studio
-          </Link>
         </div>
       </header>
 
-      <section className="space-y-3">
+      <section className="flex min-h-0 flex-1 flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="app-section-title">Sessions</h2>
           {activeQuery.data ? (
@@ -74,13 +76,15 @@ export default function ActiveLiveSessionsPage() {
         ) : null}
 
         {activeQuery.data && activeQuery.data.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {activeQuery.data.map((session) => (
-              <LiveSessionCard
-                key={`${session.stream_key}-${session.id ?? 'no-id'}`}
-                session={session}
-              />
-            ))}
+          <div className="min-h-0 overflow-auto pr-1">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {activeQuery.data.map((session) => (
+                <LiveSessionCard
+                  key={`${session.stream_key}-${session.id ?? 'no-id'}`}
+                  session={session}
+                />
+              ))}
+            </div>
           </div>
         ) : null}
       </section>

@@ -3,7 +3,7 @@ import { User, Shield, Database } from 'lucide-react';
 
 export default function ProfilePage() {
   return (
-    <div className="max-w-5xl space-y-6">
+    <div className="space-y-6">
       <header className="app-card p-6 sm:p-7">
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">

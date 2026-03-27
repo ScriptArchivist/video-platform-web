@@ -78,8 +78,8 @@ export default function VideoDetailPage() {
   const showProcessingPanel = video.status !== 'ready';
 
   return (
-    <div className="space-y-6">
-      <header className="app-card p-6 sm:p-7">
+    <div className="flex min-h-[calc(100dvh-124px)] flex-col gap-5">
+      <header className="app-card p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 space-y-3">
             <Link
@@ -94,8 +94,7 @@ export default function VideoDetailPage() {
               <p className="text-sm font-medium text-slate-500">Video #{video.id}</p>
               <h1 className="app-page-title">{video.title}</h1>
               <p className="app-page-description">
-                Review playback, current processing state, and all available
-                metadata in one place.
+                Review playback, processing state, and video metadata in one place.
               </p>
             </div>
           </div>
@@ -114,58 +113,66 @@ export default function VideoDetailPage() {
         </div>
       </header>
 
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="app-section-title">Playback</h2>
-          <span className="text-sm text-slate-500">
-            {video.status === 'ready'
-              ? 'Playback is ready.'
-              : 'Playback will appear when processing finishes.'}
-          </span>
-        </div>
+      <div className="grid min-h-0 flex-1 gap-5 xl:grid-cols-[minmax(0,1.55fr)_380px]">
+        <section className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="app-section-title">Playback</h2>
+            <span className="text-sm text-slate-500">
+              {video.status === 'ready'
+                ? 'Playback is ready.'
+                : 'Playback will appear when processing finishes.'}
+            </span>
+          </div>
 
-        <div className="app-card p-4 sm:p-6">
-          {isPlayable ? (
-            <VideoPlaybackPanel src={playbackUrl!} />
-          ) : showProcessingPanel ? (
-            <ProcessingStatePanel
-              status={video.status}
-              errorMessage={video.error_message}
-            />
-          ) : (
-            <div className="flex aspect-video items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
-              Playback is not available yet
+          <div className="app-card p-4 sm:p-5">
+            <div className="flex min-h-[360px] items-center justify-center">
+              {isPlayable ? (
+                <div className="w-full">
+                  <VideoPlaybackPanel src={playbackUrl!} />
+                </div>
+              ) : showProcessingPanel ? (
+                <div className="w-full">
+                  <ProcessingStatePanel
+                    status={video.status}
+                    errorMessage={video.error_message}
+                  />
+                </div>
+              ) : (
+                <div className="flex aspect-video w-full items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
+                  Playback is not available yet
+                </div>
+              )}
             </div>
-          )}
-        </div>
-
-        {video.status === 'failed' ? (
-          <div className="app-alert-warning p-6 shadow-sm">
-            <p className="font-medium text-slate-900">
-              Processing did not finish successfully
-            </p>
-            <p className="mt-2 leading-6">
-              {video.error_message ??
-                'This video could not be prepared for playback. Please review the details below.'}
-            </p>
           </div>
-        ) : null}
 
-        {video.status === 'ready' && !playbackUrl ? (
-          <div className="app-alert-warning p-6 shadow-sm">
-            <p className="font-medium text-slate-900">Playback link is missing</p>
-            <p className="mt-2 leading-6">
-              The video is marked as ready, but the playback URL is not
-              available yet.
-            </p>
-          </div>
-        ) : null}
-      </section>
+          {video.status === 'failed' ? (
+            <div className="app-alert-warning p-6 shadow-sm">
+              <p className="font-medium text-slate-900">
+                Processing did not finish successfully
+              </p>
+              <p className="mt-2 leading-6">
+                {video.error_message ??
+                  'This video could not be prepared for playback. Please review the details below.'}
+              </p>
+            </div>
+          ) : null}
 
-      <section className="space-y-3">
-        <h2 className="app-section-title">Details</h2>
-        <VideoDetailMeta video={video} />
-      </section>
+          {video.status === 'ready' && !playbackUrl ? (
+            <div className="app-alert-warning p-6 shadow-sm">
+              <p className="font-medium text-slate-900">Playback link is missing</p>
+              <p className="mt-2 leading-6">
+                The video is marked as ready, but the playback URL is not
+                available yet.
+              </p>
+            </div>
+          ) : null}
+        </section>
+
+        <section className="min-h-0 space-y-3">
+          <h2 className="app-section-title">Details</h2>
+          <VideoDetailMeta video={video} />
+        </section>
+      </div>
     </div>
   );
 }

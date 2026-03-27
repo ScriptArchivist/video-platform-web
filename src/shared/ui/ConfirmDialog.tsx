@@ -36,9 +36,11 @@ export function ConfirmDialog({
     };
 
     document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
     };
   }, [open, isLoading, onClose]);
 
@@ -48,7 +50,7 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/70 p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isLoading) {
           onClose();
