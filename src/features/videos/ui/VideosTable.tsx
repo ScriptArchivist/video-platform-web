@@ -6,7 +6,6 @@ import { PlayCircle } from 'lucide-react';
 import { getVideoById } from '../api';
 import { videoQueryKeys } from '../queryKeys';
 import type { VideoListItemDTO } from '../types';
-import { VisibilityBadge } from './VisibilityBadge';
 
 interface VideosTableProps {
   items: VideoListItemDTO[];
@@ -33,6 +32,10 @@ function formatDuration(seconds: number | null) {
 
 function formatUploadedAt(value: string) {
   return new Date(value).toLocaleString();
+}
+
+function formatVisibility(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 export function VideosTable({ items }: VideosTableProps) {
@@ -84,23 +87,15 @@ export function VideosTable({ items }: VideosTableProps) {
 
               <div className="flex flex-1 flex-col p-5">
                 <div className="space-y-1.5">
-                  <div className="line-clamp-2 min-h-[52px] text-base font-semibold leading-6 text-slate-900">
+                  <div className="line-clamp-2 text-base font-semibold leading-6 text-slate-900">
                     {video.title}
                   </div>
 
                   <div className="text-sm text-slate-600">{creatorName}</div>
 
                   <div className="text-xs text-slate-500">
-                    {formatUploadedAt(video.uploaded_at)}
-                  </div>
-                </div>
-
-                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                    Visibility
-                  </div>
-                  <div className="mt-2">
-                    <VisibilityBadge visibility={video.visibility} />
+                    {formatUploadedAt(video.uploaded_at)} ·{' '}
+                    {formatVisibility(video.visibility)}
                   </div>
                 </div>
               </div>

@@ -45,6 +45,16 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/videos/new/page.js"
+    ],
+    "/(protected)/videos/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/videos/[id]/page.js"
+    ],
+    "/(protected)/videos/[id]/edit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/videos/[id]/edit/page.js"
     ]
   }
 }
