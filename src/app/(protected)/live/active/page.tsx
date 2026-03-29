@@ -9,7 +9,7 @@ import {
   PageErrorState,
   PageLoadingState,
 } from '@/shared/ui/PageState';
-import { Radio, Upload, PlaySquare } from 'lucide-react';
+import { Radio, Upload, PlaySquare, Video } from 'lucide-react';
 
 export default function ActiveLiveSessionsPage() {
   const activeQuery = useActiveLiveSessions();
@@ -34,9 +34,14 @@ export default function ActiveLiveSessionsPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <Link href="/videos" className="app-btn-secondary gap-2">
+              <Video className="h-4 w-4" />
+              Videos
+            </Link>
+
             <Link href="/videos/new" className="app-btn-secondary gap-2">
               <Upload className="h-4 w-4" />
-              Upload video
+              Upload Video
             </Link>
 
             <Link href="/live" className="app-btn-secondary gap-2">

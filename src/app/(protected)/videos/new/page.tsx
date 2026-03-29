@@ -17,6 +17,7 @@ import {
   Upload,
   Radio,
   PlaySquare,
+  Video,
 } from 'lucide-react';
 
 const schema = z.object({
@@ -137,9 +138,14 @@ export default function NewVideoPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <Link href="/videos" className="app-btn-secondary gap-2">
+              <Video className="h-4 w-4" />
+              Videos
+            </Link>
+
             <Link href="/videos/new" className="app-btn-primary gap-2">
               <Upload className="h-4 w-4" />
-              Upload video
+              Upload Video
             </Link>
 
             <Link href="/live" className="app-btn-secondary gap-2">
