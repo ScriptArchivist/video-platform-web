@@ -1,58 +1,106 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Hls from 'hls.js';
 
 interface LivePlayerPanelProps {
   src: string;
 }
 
+function withCacheBuster(src: string, token: number) {
+  try {
+    const url = new URL(src, window.location.origin);
+    url.searchParams.set('_live', String(token));
+    return url.toString();
+  } catch {
+    const separator = src.includes('?') ? '&' : '?';
+    return `${src}${separator}_live=${token}`;
+  }
+}
+
 export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const retryTimerRef = useRef<number | null>(null);
   const hlsRef = useRef<Hls | null>(null);
+
   const [playbackError, setPlaybackError] = useState<string | null>(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  const resolvedSrc = useMemo(
+    () => withCacheBuster(src, reloadToken),
+    [src, reloadToken],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (retryTimerRef.current !== null) {
+        window.clearTimeout(retryTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !src) {
+    if (!video || !resolvedSrc) {
       return;
     }
 
     let isDisposed = false;
 
-    setPlaybackError(null);
-    setIsVideoReady(false);
+    const clearRetryTimer = () => {
+      if (retryTimerRef.current !== null) {
+        window.clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
+    };
 
-    const markReady = () => {
+    const scheduleReload = (delay = 2000) => {
       if (isDisposed) return;
+      if (retryTimerRef.current !== null) return;
+
+      retryTimerRef.current = window.setTimeout(() => {
+        retryTimerRef.current = null;
+        if (!isDisposed) {
+          setReloadToken((value) => value + 1);
+        }
+      }, delay);
+    };
+
+    const markReady = async () => {
+      if (isDisposed) return;
+
       setIsVideoReady(true);
       setPlaybackError(null);
-    };
-
-    const markWaiting = (message = 'Waiting for live stream...') => {
-      if (isDisposed) return;
-      setPlaybackError(message);
-    };
-
-    const handleLoadedMetadata = () => {
-      markReady();
-    };
-
-    const handleLoadedData = () => {
-      markReady();
-    };
-
-    const handleCanPlay = async () => {
-      markReady();
+      clearRetryTimer();
 
       try {
         await video.play();
       } catch {}
     };
 
+    const markWaiting = (message = 'Waiting for live stream...') => {
+      if (isDisposed) return;
+
+      setPlaybackError(message);
+      setIsVideoReady(false);
+      scheduleReload();
+    };
+
+    const handleLoadedMetadata = () => {
+      void markReady();
+    };
+
+    const handleLoadedData = () => {
+      void markReady();
+    };
+
+    const handleCanPlay = async () => {
+      void markReady();
+    };
+
     const handlePlaying = () => {
-      markReady();
+      void markReady();
     };
 
     const handleError = () => {
@@ -71,6 +119,10 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       video.load();
     } catch {}
 
+    setPlaybackError(null);
+    setIsVideoReady(false);
+    clearRetryTimer();
+
     if (Hls.isSupported()) {
       const hls = new Hls({
         enableWorker: true,
@@ -81,7 +133,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
 
       hls.on(Hls.Events.MEDIA_ATTACHED, () => {
         if (isDisposed) return;
-        hls.loadSource(src);
+        hls.loadSource(resolvedSrc);
         hls.startLoad();
       });
 
@@ -94,11 +146,11 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       });
 
       hls.on(Hls.Events.LEVEL_LOADED, () => {
-        markReady();
+        void markReady();
       });
 
       hls.on(Hls.Events.FRAG_BUFFERED, () => {
-        markReady();
+        void markReady();
       });
 
       hls.on(Hls.Events.ERROR, (_event, data) => {
@@ -109,9 +161,9 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
           markWaiting();
           try {
-            hls.startLoad();
-            return;
+            hls.destroy();
           } catch {}
+          return;
         }
 
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
@@ -123,11 +175,14 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         }
 
         markWaiting();
+        try {
+          hls.destroy();
+        } catch {}
       });
 
       hls.attachMedia(video);
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = src;
+      video.src = resolvedSrc;
 
       void video.play().catch(() => {
         markWaiting();
@@ -138,6 +193,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
 
     return () => {
       isDisposed = true;
+      clearRetryTimer();
 
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('loadeddata', handleLoadedData);
@@ -158,7 +214,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         video.load();
       } catch {}
     };
-  }, [src]);
+  }, [resolvedSrc]);
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-black shadow-sm">
