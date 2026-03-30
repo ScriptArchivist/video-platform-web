@@ -6,27 +6,12 @@ import { useLiveSession } from '@/features/live/hooks/useLiveSession';
 import { LiveStatusBadge } from '@/features/live/ui/LiveStatusBadge';
 import { LivePlayerPanel } from '@/features/live/ui/LivePlayerPanel';
 import { parseApiError } from '@/shared/api/client';
+import { resolveLiveHlsUrl } from '@/features/live/utils';
 import {
   PageErrorState,
-  PageLoadingState,
   PageNotFoundState,
 } from '@/shared/ui/PageState';
 import { ArrowLeft, Radio } from 'lucide-react';
-
-function resolveLiveHlsUrl(session: {
-  hls_url?: string | null;
-  thumbnail_url?: string | null;
-}): string | null {
-  if (session.hls_url) {
-    return session.hls_url;
-  }
-
-  if (session.thumbnail_url && session.thumbnail_url.endsWith('/thumb.jpg')) {
-    return session.thumbnail_url.replace(/\/thumb\.jpg$/, '/master.m3u8');
-  }
-
-  return null;
-}
 
 export default function WatchLivePage() {
   const params = useParams();
@@ -46,18 +31,10 @@ export default function WatchLivePage() {
     );
   }
 
-  if (sessionQuery.isLoading) {
-    return (
-      <div className="space-y-6">
-        <PageLoadingState
-          title="Opening live stream"
-          description="Connecting to the stream and preparing playback..."
-        />
-      </div>
-    );
-  }
+  const session = sessionQuery.data ?? null;
+  const hlsUrl = resolveLiveHlsUrl(session, streamKey);
 
-  if (sessionQuery.isError) {
+  if (!sessionQuery.isLoading && !session && sessionQuery.isError) {
     return (
       <div className="space-y-6">
         <PageErrorState
@@ -68,9 +45,7 @@ export default function WatchLivePage() {
     );
   }
 
-  const session = sessionQuery.data;
-
-  if (!session) {
+  if (!sessionQuery.isLoading && !session && !hlsUrl) {
     return (
       <div className="space-y-6">
         <PageNotFoundState
@@ -81,10 +56,11 @@ export default function WatchLivePage() {
     );
   }
 
-  const hlsUrl = resolveLiveHlsUrl(session);
-  const isLive = session.status === 'started';
-  const isOffline =
-    session.status === 'stopped' || session.status === 'expired';
+  const title = session?.title ?? 'Live stream';
+  const displayStreamKey = session?.stream_key ?? streamKey;
+  const status = session?.status;
+  const isLive = status === 'started';
+  const isOffline = status === 'stopped' || status === 'expired';
 
   return (
     <div className="flex min-h-[calc(100dvh-124px)] flex-col gap-5">
@@ -97,15 +73,15 @@ export default function WatchLivePage() {
             </div>
 
             <div>
-              <h1 className="app-page-title">{session.title ?? 'Live stream'}</h1>
+              <h1 className="app-page-title">{title}</h1>
               <p className="mt-2 text-sm text-slate-300">
-                Stream key: {session.stream_key}
+                Stream key: {displayStreamKey}
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <LiveStatusBadge status={session.status} />
+            {status ? <LiveStatusBadge status={status} /> : null}
 
             <Link href="/live/active" className="app-btn-secondary gap-2">
               <ArrowLeft className="h-4 w-4" />
@@ -158,15 +134,24 @@ export default function WatchLivePage() {
           <div className="app-inset mt-4 p-4">
             <div className="text-sm font-medium text-white">Status</div>
             <p className="mt-2 text-sm leading-6 text-slate-300">
-              {isLive
+              {status === 'started'
                 ? 'The stream is currently live.'
                 : isOffline
                 ? 'The stream is currently offline.'
+                : sessionQuery.isLoading
+                ? 'Loading live session details from the backend.'
                 : 'The system is waiting for the stream to start.'}
             </p>
           </div>
 
-          {session.error ? (
+          {sessionQuery.isError && session ? (
+            <div className="app-alert-error mt-4">
+              <p className="font-medium text-red-100">Session update error</p>
+              <p className="mt-2 leading-6">{parseApiError(sessionQuery.error)}</p>
+            </div>
+          ) : null}
+
+          {session?.error ? (
             <div className="app-alert-error mt-4">
               <p className="font-medium text-red-100">Stream error</p>
               <p className="mt-2 leading-6">{session.error}</p>

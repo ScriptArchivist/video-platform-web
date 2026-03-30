@@ -23,6 +23,7 @@ import { LiveStatusBadge } from '@/features/live/ui/LiveStatusBadge';
 import { parseApiError } from '@/shared/api/client';
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { useToast } from '@/shared/ui/toast/ToastProvider';
+import { proxyOriginUrl } from '@/features/live/utils';
 
 const schema = z.object({
   title: z.string().optional(),
@@ -119,7 +120,7 @@ export default function LiveStudioPage() {
     }
   }, [currentSession]);
 
-  const hlsUrl = currentSession?.hls_url ?? sessionMeta?.hls_url ?? null;
+  const hlsUrl = proxyOriginUrl(currentSession?.hls_url ?? sessionMeta?.hls_url ?? null);
   const canShowPlayer = Boolean(hlsUrl);
 
   const streamSetup = useMemo(() => {
@@ -130,6 +131,7 @@ export default function LiveStudioPage() {
     return {
       rtmp_url: sessionMeta?.rtmp_url ?? '',
       stream_key: currentSession?.stream_key ?? createdStreamKey ?? '',
+      hls_url: proxyOriginUrl(currentSession?.hls_url ?? sessionMeta?.hls_url ?? ''),
     };
   }, [currentSession, sessionMeta, createdStreamKey]);
 
@@ -147,7 +149,7 @@ export default function LiveStudioPage() {
       setSessionMeta(response);
       showSuccess('Live session created');
     } catch (error) {
-      const msg = parseApiError(error).message;
+      const msg = parseApiError(error);
       setSubmitError(msg);
       showError(msg);
     }
@@ -305,7 +307,11 @@ export default function LiveStudioPage() {
                 <div className="mt-4 space-y-3">
                   {streamSetup?.stream_key ? (
                     <Link
-                      href={`/watch/live/${streamSetup.stream_key}`}
+                      href={
+                        streamSetup.hls_url
+                          ? `/watch/live/${streamSetup.stream_key}?hls=${encodeURIComponent(streamSetup.hls_url)}`
+                          : `/watch/live/${streamSetup.stream_key}`
+                      }
                       className="app-btn-secondary w-full"
                     >
                       Open player
@@ -389,7 +395,7 @@ export default function LiveStudioPage() {
             setSubmitError(null);
             showSuccess('Stopped');
           } catch (error) {
-            const msg = parseApiError(error).message;
+            const msg = parseApiError(error);
             setSubmitError(msg);
             showError(msg);
           }

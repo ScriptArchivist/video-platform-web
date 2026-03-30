@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import type { MouseEvent } from 'react';
 import type { ActiveLiveItemDTO } from '../types';
 import { LiveStatusBadge } from './LiveStatusBadge';
-import { PlayCircle, Radio } from 'lucide-react';
+import { Radio } from 'lucide-react';
 
 interface LiveSessionCardProps {
   session: ActiveLiveItemDTO;
@@ -18,13 +19,29 @@ function formatStartedAt(value?: string | null) {
 }
 
 export function LiveSessionCard({ session }: LiveSessionCardProps) {
+  const href = `/watch/live/${session.stream_key}`;
+
+  const handleClick = (_event: MouseEvent<HTMLAnchorElement>) => {
+    if (!session.hls_url) {
+      return;
+    }
+
+    try {
+      window.sessionStorage.setItem(
+        `live:hls:${session.stream_key}`,
+        session.hls_url,
+      );
+    } catch {}
+  };
+
   return (
     <Link
-      href={`/watch/live/${session.stream_key}`}
+      href={href}
+      onClick={handleClick}
       className="block h-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-300/40"
     >
       <article className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:border-white/30 hover:bg-white/14 hover:shadow-xl">
-        <div className="relative h-[220px] w-full shrink-0 overflow-hidden bg-white/8">
+        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-white/8">
           {session.thumbnail_url ? (
             <img
               src={session.thumbnail_url}
@@ -45,38 +62,25 @@ export function LiveSessionCard({ session }: LiveSessionCardProps) {
             LIVE
           </div>
 
-          <div className="absolute bottom-3 right-3 rounded-xl bg-black/70 px-2.5 py-1 text-xs font-medium text-white shadow-sm">
-            Watch
+          <div className="absolute right-3 top-3">
+            <LiveStatusBadge status={session.status as any} />
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col p-5">
+        <div className="flex flex-1 flex-col px-4 py-3">
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 space-y-1.5">
-              <div className="line-clamp-2 text-base font-semibold leading-6 text-white">
+            <div className="min-w-0 space-y-1">
+              <div className="line-clamp-2 text-sm font-semibold leading-5 text-white">
                 {session.title || 'Live stream'}
               </div>
 
-              <div className="text-sm text-slate-200">
+              <div className="truncate text-xs text-slate-200">
                 {session.owner_name || 'Unknown streamer'}
               </div>
 
-              <div className="text-xs text-slate-300">
+              <div className="truncate text-xs text-slate-400">
                 {formatStartedAt(session.started_at)}
               </div>
-            </div>
-
-            <LiveStatusBadge status={session.status as any} />
-          </div>
-
-          <div className="mt-4 flex items-center justify-between gap-3">
-            <div className="text-xs text-slate-300">
-              Stream key: {session.stream_key}
-            </div>
-
-            <div className="inline-flex items-center gap-2 text-sm font-medium text-white">
-              <PlayCircle className="h-4 w-4" />
-              Open
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 {
-  "/login/page": "app/login/page.js",
-  "/(protected)/videos/page": "app/(protected)/videos/page.js",
   "/(protected)/live/active/page": "app/(protected)/live/active/page.js",
-  "/(protected)/watch/live/[streamKey]/page": "app/(protected)/watch/live/[streamKey]/page.js"
+  "/(protected)/watch/live/[streamKey]/page": "app/(protected)/watch/live/[streamKey]/page.js",
+  "/(protected)/videos/page": "app/(protected)/videos/page.js",
+  "/(protected)/videos/[id]/page": "app/(protected)/videos/[id]/page.js"
 }
