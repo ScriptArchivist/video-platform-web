@@ -61,7 +61,7 @@ export function VideoFilters({
       </div>
 
       {typeof total === 'number' && (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
+        <div className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-200 backdrop-blur-xl">
           {total} video{total === 1 ? '' : 's'}
         </div>
       )}

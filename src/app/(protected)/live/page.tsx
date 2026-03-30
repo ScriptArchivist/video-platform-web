@@ -196,7 +196,7 @@ export default function LiveStudioPage() {
       <div className="app-card p-5 sm:p-6">
         <div className="flex flex-col gap-4">
           <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-xs text-red-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-300/30 bg-red-500/14 px-3 py-1 text-xs text-red-100">
               <Radio className="h-3.5 w-3.5" />
               Live Studio
             </div>
@@ -241,7 +241,7 @@ export default function LiveStudioPage() {
                 <LivePlayerPanel src={hlsUrl!} />
               </div>
             ) : (
-              <div className="flex aspect-video w-full items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
+              <div className="flex aspect-video w-full items-center justify-center rounded-3xl border border-dashed border-white/20 bg-white/8 text-sm text-slate-200 backdrop-blur-xl">
                 Waiting for live stream...
               </div>
             )}
@@ -282,13 +282,13 @@ export default function LiveStudioPage() {
                 <h2 className="app-section-title">How it works</h2>
 
                 <div className="mt-4 space-y-3">
-                  <div className="app-inset p-4 text-sm text-slate-700">
+                  <div className="app-inset p-4 text-sm text-slate-100">
                     1. Create a live session.
                   </div>
-                  <div className="app-inset p-4 text-sm text-slate-700">
+                  <div className="app-inset p-4 text-sm text-slate-100">
                     2. Paste RTMP credentials into OBS.
                   </div>
-                  <div className="app-inset p-4 text-sm text-slate-700">
+                  <div className="app-inset p-4 text-sm text-slate-100">
                     3. Start streaming and monitor playback here.
                   </div>
                 </div>
@@ -331,12 +331,12 @@ export default function LiveStudioPage() {
                   {streamSetup?.rtmp_url ? (
                     <div className="app-inset p-4">
                       <div className="flex items-start justify-between gap-3">
-                        <span className="text-sm font-medium text-slate-700">
+                        <span className="text-sm font-medium text-slate-100">
                           RTMP URL
                         </span>
                         <CopyButton value={streamSetup.rtmp_url} id="rtmp" />
                       </div>
-                      <div className="mt-3 break-all font-mono text-sm text-slate-800">
+                      <div className="mt-3 break-all font-mono text-sm text-slate-200">
                         {streamSetup.rtmp_url}
                       </div>
                     </div>
@@ -345,12 +345,12 @@ export default function LiveStudioPage() {
                   {streamSetup?.stream_key ? (
                     <div className="app-inset p-4">
                       <div className="flex items-start justify-between gap-3">
-                        <span className="text-sm font-medium text-slate-700">
+                        <span className="text-sm font-medium text-slate-100">
                           Stream key
                         </span>
                         <CopyButton value={streamSetup.stream_key} id="key" />
                       </div>
-                      <div className="mt-3 break-all font-mono text-sm text-slate-800">
+                      <div className="mt-3 break-all font-mono text-sm text-slate-200">
                         {streamSetup.stream_key}
                       </div>
                     </div>

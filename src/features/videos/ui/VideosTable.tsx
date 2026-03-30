@@ -59,10 +59,10 @@ export function VideosTable({ items }: VideosTableProps) {
           <Link
             key={video.id}
             href={`/videos/${video.id}`}
-            className="block h-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            className="block h-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-300/40"
           >
-            <article className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl">
-              <div className="relative h-[220px] w-full shrink-0 overflow-hidden bg-slate-100">
+            <article className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:border-white/30 hover:bg-white/14 hover:shadow-xl">
+              <div className="relative h-[220px] w-full shrink-0 overflow-hidden bg-white/8">
                 {video.thumbnail_url ? (
                   <img
                     src={video.thumbnail_url}
@@ -70,8 +70,8 @@ export function VideosTable({ items }: VideosTableProps) {
                     className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                   />
                 ) : (
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-sm text-slate-400">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 shadow-sm">
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-sm text-slate-300">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-xl">
                       <PlayCircle className="h-6 w-6" />
                     </div>
                     No preview
@@ -79,7 +79,7 @@ export function VideosTable({ items }: VideosTableProps) {
                 )}
 
                 {duration ? (
-                  <div className="absolute bottom-3 right-3 rounded-xl bg-black/80 px-2.5 py-1 text-xs font-medium text-white shadow-sm">
+                  <div className="absolute bottom-3 right-3 rounded-xl bg-black/70 px-2.5 py-1 text-xs font-medium text-white shadow-sm">
                     {duration}
                   </div>
                 ) : null}
@@ -87,13 +87,13 @@ export function VideosTable({ items }: VideosTableProps) {
 
               <div className="flex flex-1 flex-col p-5">
                 <div className="space-y-1.5">
-                  <div className="line-clamp-2 text-base font-semibold leading-6 text-slate-900">
+                  <div className="line-clamp-2 text-base font-semibold leading-6 text-white">
                     {video.title}
                   </div>
 
-                  <div className="text-sm text-slate-600">{creatorName}</div>
+                  <div className="text-sm text-slate-200">{creatorName}</div>
 
-                  <div className="text-xs text-slate-500">
+                  <div className="text-xs text-slate-300">
                     {formatUploadedAt(video.uploaded_at)} ·{' '}
                     {formatVisibility(video.visibility)}
                   </div>

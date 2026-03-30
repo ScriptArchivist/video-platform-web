@@ -19,14 +19,14 @@ export function PaginationControls({
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="text-sm text-slate-500">
-        Showing <span className="font-medium text-slate-700">{from}</span>–
-        <span className="font-medium text-slate-700">{to}</span> of{' '}
-        <span className="font-medium text-slate-700">{total}</span>
+      <div className="text-sm text-slate-300">
+        Showing <span className="font-medium text-white">{from}</span>–
+        <span className="font-medium text-white">{to}</span> of{' '}
+        <span className="font-medium text-white">{total}</span>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+        <div className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-200 backdrop-blur-xl">
           Page {page} of {totalPages}
         </div>
 

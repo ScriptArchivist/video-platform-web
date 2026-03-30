@@ -67,92 +67,92 @@ textarea::placeholder {
   }
 
   .app-page-header {
-    @apply flex flex-wrap items-start justify-between gap-4 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm backdrop-blur sm:p-7;
+    @apply flex flex-wrap items-start justify-between gap-4 rounded-3xl border border-white/20 bg-white/12 p-6 shadow-sm backdrop-blur-xl sm:p-7;
   }
 
   .app-card {
-    @apply rounded-3xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur;
+    @apply rounded-3xl border border-white/20 bg-white/12 shadow-sm backdrop-blur-xl;
     box-shadow:
-      0 1px 2px rgba(15, 23, 42, 0.03),
-      0 10px 28px rgba(15, 23, 42, 0.06);
+      0 1px 2px rgba(2, 6, 23, 0.18),
+      0 12px 32px rgba(2, 6, 23, 0.24);
   }
 
   .app-card-secondary {
-    @apply rounded-3xl border border-slate-200/80 bg-slate-50/90 shadow-sm;
+    @apply rounded-3xl border border-white/16 bg-white/10 shadow-sm backdrop-blur-xl;
   }
 
   .app-card-muted {
-    @apply rounded-3xl border border-slate-200/80 bg-slate-50/80 shadow-sm;
+    @apply rounded-3xl border border-white/14 bg-white/8 shadow-sm backdrop-blur-xl;
   }
 
   .app-inset {
-    @apply rounded-2xl border border-slate-200/80 bg-slate-50/90;
+    @apply rounded-2xl border border-white/14 bg-white/8;
   }
 
   .app-section-title {
-    @apply text-lg font-semibold tracking-tight text-slate-900;
+    @apply text-lg font-semibold tracking-tight text-white;
   }
 
   .app-page-title {
-    @apply text-3xl font-semibold tracking-tight text-slate-950;
+    @apply text-3xl font-semibold tracking-tight text-white;
   }
 
   .app-page-description {
-    @apply max-w-2xl text-sm leading-6 text-slate-500;
+    @apply max-w-2xl text-sm leading-6 text-slate-200;
   }
 
   .app-input {
-    @apply h-11 w-full rounded-2xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-all duration-150 placeholder:text-slate-400 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400;
+    @apply h-11 w-full rounded-2xl border border-white/20 bg-[#0f1a2f]/70 px-3 text-sm text-white outline-none transition-all duration-150 placeholder:text-slate-400 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/5 disabled:text-slate-400;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.65),
-      0 1px 2px rgba(15, 23, 42, 0.03);
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 1px 2px rgba(2, 6, 23, 0.2);
   }
 
   .app-textarea {
-    @apply min-h-[120px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition-all duration-150 placeholder:text-slate-400 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400;
+    @apply min-h-[120px] w-full rounded-2xl border border-white/20 bg-[#0f1a2f]/70 px-3 py-2.5 text-sm text-white outline-none transition-all duration-150 placeholder:text-slate-400 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/5 disabled:text-slate-400;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.65),
-      0 1px 2px rgba(15, 23, 42, 0.03);
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 1px 2px rgba(2, 6, 23, 0.2);
   }
 
   .app-select {
-    @apply h-11 w-full rounded-2xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-all duration-150 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400;
+    @apply h-11 w-full rounded-2xl border border-white/20 bg-[#0f1a2f]/70 px-3 text-sm text-white outline-none transition-all duration-150 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/5 disabled:text-slate-400;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.65),
-      0 1px 2px rgba(15, 23, 42, 0.03);
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 1px 2px rgba(2, 6, 23, 0.2);
   }
 
   .app-input:hover,
   .app-textarea:hover,
   .app-select:hover {
-    @apply border-slate-300;
+    @apply border-white/30;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.65),
-      0 2px 6px rgba(15, 23, 42, 0.04);
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 2px 6px rgba(2, 6, 23, 0.25);
   }
 
   .app-input:focus,
   .app-textarea:focus,
   .app-select:focus {
-    @apply border-indigo-400 ring-4 ring-indigo-100/80;
+    @apply border-indigo-400 ring-4 ring-indigo-500/20;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.65),
-      0 0 0 1px rgba(129, 140, 248, 0.18);
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 0 0 1px rgba(129, 140, 248, 0.25);
   }
 
   .app-btn-primary {
-    @apply inline-flex h-11 items-center justify-center rounded-2xl border border-indigo-600 bg-indigo-600 px-4 text-sm font-medium text-white transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex h-11 items-center justify-center rounded-2xl border border-indigo-500 bg-indigo-500 px-4 text-sm font-medium text-white transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
     box-shadow:
       0 1px 2px rgba(79, 70, 229, 0.18),
-      0 10px 22px rgba(79, 70, 229, 0.2);
+      0 10px 22px rgba(79, 70, 229, 0.22);
   }
 
   .app-btn-primary:hover {
-    @apply border-indigo-700 bg-indigo-700;
+    @apply border-indigo-400 bg-indigo-400;
     transform: translateY(-1px);
     box-shadow:
-      0 1px 2px rgba(79, 70, 229, 0.2),
-      0 14px 28px rgba(79, 70, 229, 0.24);
+      0 1px 2px rgba(79, 70, 229, 0.22),
+      0 14px 28px rgba(79, 70, 229, 0.26);
   }
 
   .app-btn-primary:active {
@@ -163,18 +163,18 @@ textarea::placeholder {
   }
 
   .app-btn-secondary {
-    @apply inline-flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex h-11 items-center justify-center rounded-2xl border border-white/20 bg-white/14 px-4 text-sm font-medium text-white transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 1px 2px rgba(15, 23, 42, 0.03);
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 1px 2px rgba(2, 6, 23, 0.16);
   }
 
   .app-btn-secondary:hover {
-    @apply border-slate-300 bg-slate-50 text-slate-900;
+    @apply border-white/30 bg-white/20 text-white;
     transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 6px 18px rgba(15, 23, 42, 0.06);
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 6px 18px rgba(2, 6, 23, 0.2);
   }
 
   .app-btn-secondary:active {
@@ -182,18 +182,18 @@ textarea::placeholder {
   }
 
   .app-btn-danger {
-    @apply inline-flex h-11 items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-4 text-sm font-medium text-red-700 transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex h-11 items-center justify-center rounded-2xl border border-red-300/40 bg-red-500/18 px-4 text-sm font-medium text-white transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 1px 2px rgba(239, 68, 68, 0.06);
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 1px 2px rgba(239, 68, 68, 0.1);
   }
 
   .app-btn-danger:hover {
-    @apply border-red-300 bg-red-100;
+    @apply border-red-300/50 bg-red-500/24 text-white;
     transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 8px 18px rgba(239, 68, 68, 0.1);
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 8px 18px rgba(239, 68, 68, 0.14);
   }
 
   .app-btn-danger:active {
@@ -201,27 +201,27 @@ textarea::placeholder {
   }
 
   .app-label {
-    @apply text-sm font-medium text-slate-700;
+    @apply text-sm font-medium text-slate-100;
   }
 
   .app-error-text {
-    @apply text-sm font-medium text-red-700;
+    @apply text-sm font-medium text-red-200;
   }
 
   .app-alert-error {
-    @apply rounded-2xl border border-red-200 bg-red-50/90 p-4 text-sm text-red-700;
+    @apply rounded-2xl border border-red-300/30 bg-red-500/14 p-4 text-sm text-red-100;
   }
 
   .app-alert-warning {
-    @apply rounded-2xl border border-amber-200 bg-amber-50/90 p-4 text-sm text-slate-700;
+    @apply rounded-2xl border border-amber-300/30 bg-amber-500/14 p-4 text-sm text-amber-100;
   }
 
   .app-alert-accent {
-    @apply rounded-2xl border border-indigo-200 bg-indigo-50/90 p-4 text-sm text-indigo-700;
+    @apply rounded-2xl border border-indigo-300/30 bg-indigo-500/14 p-4 text-sm text-indigo-100;
   }
 
   .app-subtle-divider {
-    @apply border-t border-slate-100 pt-4;
+    @apply border-t border-white/10 pt-4;
   }
 
   .app-badge {
@@ -229,15 +229,15 @@ textarea::placeholder {
   }
 
   .app-badge-neutral {
-    @apply border-slate-200 bg-slate-100 text-slate-700;
+    @apply border-white/16 bg-white/10 text-slate-100;
   }
 
   .app-badge-accent {
-    @apply border-indigo-200 bg-indigo-50 text-indigo-700;
+    @apply border-indigo-300/30 bg-indigo-500/14 text-indigo-100;
   }
 
   .app-accent-soft {
-    @apply border border-indigo-200/80 bg-indigo-50/80 text-indigo-700;
+    @apply border border-indigo-300/30 bg-indigo-500/14 text-indigo-100;
   }
 
   .app-accent-glow {

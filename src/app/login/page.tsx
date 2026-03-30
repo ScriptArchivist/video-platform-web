@@ -49,8 +49,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:px-6">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),_transparent_32%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)]" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 text-slate-900 sm:px-6">
+      <div
+        className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/backgrounds/login.png)',
+        }}
+      />
+
+      <div className="pointer-events-none absolute inset-0 bg-[#081120]/78" />
+
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),_transparent_32%)]" />
 
       <div className="relative w-full max-w-6xl">
         <div className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-[32px] border border-slate-200/80 bg-white/90 shadow-2xl backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">

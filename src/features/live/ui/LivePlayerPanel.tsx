@@ -1,45 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface LivePlayerPanelProps {
   src: string;
-}
-
-function withCacheBuster(src: string, token: number) {
-  try {
-    const url = new URL(src, window.location.origin);
-    url.searchParams.set('_live', String(token));
-    return url.toString();
-  } catch {
-    const separator = src.includes('?') ? '&' : '?';
-    return `${src}${separator}_live=${token}`;
-  }
 }
 
 export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [playbackError, setPlaybackError] = useState<string | null>(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
-  const [reloadToken, setReloadToken] = useState(0);
-
-  const resolvedSrc = useMemo(() => withCacheBuster(src, reloadToken), [src, reloadToken]);
-
-  useEffect(() => {
-    if (isVideoReady) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setReloadToken((value) => value + 1);
-    }, 3000);
-
-    return () => window.clearTimeout(timer);
-  }, [isVideoReady, reloadToken]);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !src) return;
 
     let isDisposed = false;
     let hlsInstance: any = null;
@@ -47,21 +21,8 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
     setPlaybackError(null);
     setIsVideoReady(false);
 
-    video.pause();
-    video.removeAttribute('src');
-    video.load();
-
     const revealVideo = async () => {
       if (isDisposed) return;
-
-      const hasActualVideo =
-        video.readyState >= 2 &&
-        video.videoWidth > 0 &&
-        video.videoHeight > 0;
-
-      if (!hasActualVideo) {
-        return;
-      }
 
       setPlaybackError(null);
       setIsVideoReady(true);
@@ -69,6 +30,10 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       try {
         await video.play();
       } catch {}
+    };
+
+    const handleLoadedMetadata = () => {
+      void revealVideo();
     };
 
     const handleLoadedData = () => {
@@ -89,13 +54,18 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       setPlaybackError('Waiting for video from OBS...');
     };
 
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('loadeddata', handleLoadedData);
     video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('playing', handlePlaying);
     video.addEventListener('error', handleError);
 
     const initNativeHls = async () => {
-      video.src = resolvedSrc;
+      video.src = src;
 
       try {
         await video.play();
@@ -119,10 +89,15 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       });
 
       hlsInstance = hls;
-      hls.loadSource(resolvedSrc);
-      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+        if (isDisposed) return;
+        hls.loadSource(src);
+      });
 
       hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+        if (isDisposed) return;
+
         try {
           await video.play();
         } catch {}
@@ -137,6 +112,8 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
       });
 
       hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (isDisposed) return;
+
         if (!data?.fatal) {
           return;
         }
@@ -144,10 +121,26 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         setIsVideoReady(false);
         setPlaybackError('Waiting for video from OBS...');
 
-        try {
-          hls.destroy();
-        } catch {}
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            try {
+              hls.startLoad();
+            } catch {}
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            try {
+              hls.recoverMediaError();
+            } catch {}
+            break;
+          default:
+            try {
+              hls.destroy();
+            } catch {}
+            break;
+        }
       });
+
+      hls.attachMedia(video);
     };
 
     const init = async () => {
@@ -171,6 +164,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
     return () => {
       isDisposed = true;
 
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('loadeddata', handleLoadedData);
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('playing', handlePlaying);
@@ -188,7 +182,7 @@ export function LivePlayerPanel({ src }: LivePlayerPanelProps) {
         } catch {}
       }
     };
-  }, [resolvedSrc]);
+  }, [src]);
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-black shadow-sm">

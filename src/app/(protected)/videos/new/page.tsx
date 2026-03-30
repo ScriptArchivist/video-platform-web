@@ -123,7 +123,7 @@ export default function NewVideoPage() {
       <div className="app-card p-6 sm:p-7">
         <div className="flex flex-col gap-4">
           <div className="min-w-0 space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-slate-200">
               <CloudUpload className="h-3.5 w-3.5" />
               Upload workflow
             </div>
@@ -212,7 +212,7 @@ export default function NewVideoPage() {
 
               <div className="space-y-2">
                 <label className="app-label">Video file</label>
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
+                <div className="rounded-2xl border border-dashed border-white/20 bg-white/8 p-4 backdrop-blur-xl">
                   <input
                     type="file"
                     accept="video/*"
@@ -221,15 +221,15 @@ export default function NewVideoPage() {
                       setFile(event.target.files?.[0] ?? null);
                       form.clearErrors('root');
                     }}
-                    className="block w-full text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-white file:transition hover:file:bg-slate-800 disabled:cursor-not-allowed"
+                    className="block w-full text-sm text-slate-200 file:mr-4 file:rounded-xl file:border file:border-white/10 file:bg-[#0f1a2f]/80 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-white file:transition hover:file:bg-[#17233b] disabled:cursor-not-allowed"
                   />
 
                   {file ? (
-                    <div className="mt-3 flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-600">
-                      <FileVideo className="h-4 w-4 text-slate-500" />
+                    <div className="mt-3 flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-3 py-3 text-sm text-slate-200 backdrop-blur-xl">
+                      <FileVideo className="h-4 w-4 text-slate-300" />
                       <span>
                         Selected file:{' '}
-                        <span className="font-medium text-slate-800">{file.name}</span>
+                        <span className="font-medium text-white">{file.name}</span>
                       </span>
                     </div>
                   ) : null}
@@ -252,7 +252,7 @@ export default function NewVideoPage() {
                 Cancel
               </Link>
 
-              <span className="text-sm text-slate-500">
+              <span className="text-sm text-slate-300">
                 Upload will start immediately. Processing status will appear below.
               </span>
             </div>

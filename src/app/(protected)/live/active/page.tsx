@@ -19,7 +19,7 @@ export default function ActiveLiveSessionsPage() {
       <header className="app-card p-5 sm:p-6">
         <div className="flex flex-col gap-4">
           <div className="min-w-0 space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-300/30 bg-red-500/14 px-3 py-1 text-xs font-medium text-red-100">
               <Radio className="h-3.5 w-3.5" />
               Live monitoring
             </div>

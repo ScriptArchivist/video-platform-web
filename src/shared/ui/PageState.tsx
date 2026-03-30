@@ -19,25 +19,25 @@ function StateCard({
   return (
     <div
       className={`app-card p-8 ${
-        tone === 'warning' ? 'border-amber-200 bg-amber-50/80' : ''
+        tone === 'warning' ? 'border-red-300/30 bg-red-500/10' : ''
       }`}
     >
       <div className="mx-auto max-w-2xl text-center">
         <div
-          className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl ${
+          className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border backdrop-blur-xl ${
             tone === 'warning'
-              ? 'bg-amber-100 text-amber-700'
-              : 'bg-slate-100 text-slate-500'
+              ? 'border-red-300/30 bg-red-500/14 text-red-100'
+              : 'border-white/16 bg-[#0f1a2f]/78 text-white'
           }`}
         >
           {icon}
         </div>
 
         <div className="mt-5 space-y-2">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+          <h2 className="text-lg font-semibold tracking-tight text-white">
             {title}
           </h2>
-          <p className="text-sm leading-6 text-slate-500">{description}</p>
+          <p className="text-sm leading-6 text-slate-300">{description}</p>
         </div>
       </div>
     </div>

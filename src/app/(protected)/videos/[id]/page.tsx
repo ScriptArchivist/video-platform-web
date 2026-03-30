@@ -84,14 +84,13 @@ export default function VideoDetailPage() {
           <div className="min-w-0 space-y-3">
             <Link
               href="/videos"
-              className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+              className="app-btn-secondary inline-flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to videos
             </Link>
 
             <div className="space-y-2">
-              <p className="text-sm font-medium text-slate-500">Video #{video.id}</p>
               <h1 className="app-page-title">{video.title}</h1>
               <p className="app-page-description">
                 Review playback, processing state, and video metadata in one place.
