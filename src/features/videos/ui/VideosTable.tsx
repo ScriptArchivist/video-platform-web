@@ -48,7 +48,7 @@ export function VideosTable({ items }: VideosTableProps) {
   });
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
       {items.map((video, index) => {
         const duration = formatDuration(video.duration);
         const detailVideo = ownerQueries[index].data;
@@ -62,7 +62,7 @@ export function VideosTable({ items }: VideosTableProps) {
             className="block h-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-indigo-300/40"
           >
             <article className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:border-white/30 hover:bg-white/14 hover:shadow-xl">
-              <div className="relative h-[220px] w-full shrink-0 overflow-hidden bg-white/8">
+              <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-white/8">
                 {video.thumbnail_url ? (
                   <img
                     src={video.thumbnail_url}
@@ -71,8 +71,8 @@ export function VideosTable({ items }: VideosTableProps) {
                   />
                 ) : (
                   <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-sm text-slate-300">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-xl">
-                      <PlayCircle className="h-6 w-6" />
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/16 bg-[#0f1a2f]/78 shadow-sm backdrop-blur-xl">
+                      <PlayCircle className="h-6 w-6 text-white" />
                     </div>
                     No preview
                   </div>
@@ -85,17 +85,21 @@ export function VideosTable({ items }: VideosTableProps) {
                 ) : null}
               </div>
 
-              <div className="flex flex-1 flex-col p-5">
-                <div className="space-y-1.5">
-                  <div className="line-clamp-2 text-base font-semibold leading-6 text-white">
-                    {video.title}
-                  </div>
+              <div className="flex flex-1 flex-col px-4 py-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 space-y-1">
+                    <div className="line-clamp-2 text-sm font-semibold leading-5 text-white">
+                      {video.title}
+                    </div>
 
-                  <div className="text-sm text-slate-200">{creatorName}</div>
+                    <div className="truncate text-xs text-slate-200">
+                      {creatorName}
+                    </div>
 
-                  <div className="text-xs text-slate-300">
-                    {formatUploadedAt(video.uploaded_at)} ·{' '}
-                    {formatVisibility(video.visibility)}
+                    <div className="truncate text-xs text-slate-400">
+                      {formatUploadedAt(video.uploaded_at)} ·{' '}
+                      {formatVisibility(video.visibility)}
+                    </div>
                   </div>
                 </div>
               </div>
