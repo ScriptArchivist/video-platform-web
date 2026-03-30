@@ -6,6 +6,11 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/login/page.js"
+    ],
     "/(protected)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -16,11 +21,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/videos/page.js"
     ],
-    "/(protected)/videos/new/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(protected)/videos/new/page.js"
-    ],
     "/(protected)/videos/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -30,6 +30,26 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/videos/[id]/edit/page.js"
+    ],
+    "/(protected)/videos/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/videos/new/page.js"
+    ],
+    "/(protected)/live/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/live/page.js"
+    ],
+    "/(protected)/live/active/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/live/active/page.js"
+    ],
+    "/(protected)/watch/live/[streamKey]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/watch/live/[streamKey]/page.js"
     ]
   }
 }

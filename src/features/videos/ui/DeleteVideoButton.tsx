@@ -63,7 +63,6 @@ export function DeleteVideoButton({ videoId }: DeleteVideoButtonProps) {
         description="This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
-        confirmButtonClassName="bg-red-600 text-white hover:bg-red-700"
         isLoading={deleteMutation.isPending}
         onClose={() => setIsDialogOpen(false)}
         onConfirm={handleDelete}
