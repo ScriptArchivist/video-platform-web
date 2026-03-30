@@ -1,4 +1,6 @@
 {
   "/(protected)/videos/page": "app/(protected)/videos/page.js",
-  "/(protected)/videos/[id]/page": "app/(protected)/videos/[id]/page.js"
+  "/(protected)/videos/new/page": "app/(protected)/videos/new/page.js",
+  "/(protected)/videos/[id]/page": "app/(protected)/videos/[id]/page.js",
+  "/(protected)/videos/[id]/edit/page": "app/(protected)/videos/[id]/edit/page.js"
 }
