@@ -1,0 +1,12 @@
+node_modules
+.next
+dist
+build
+coverage
+.git
+*.log
+.cache
+Dockerfile
+docker-compose.yml
+structure.txt
+vim

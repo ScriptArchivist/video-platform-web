@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  web_app:
+    build: .
+    container_name: web_app
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
