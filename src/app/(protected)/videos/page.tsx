@@ -179,9 +179,7 @@ export default function VideosPage() {
 
         {videosQuery.data && videosQuery.data.items.length > 0 ? (
           <div className={`space-y-4 ${videosQuery.isFetching ? 'opacity-60' : ''}`}>
-            <div className="app-card p-6">
-              <VideosTable items={videosQuery.data.items} />
-            </div>
+            <VideosTable items={videosQuery.data.items} />
 
             <div className="app-card p-4">
               <PaginationControls
