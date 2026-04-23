@@ -164,16 +164,42 @@ export default function LiveStudioPage() {
     }
   });
 
+  async function copyText(value: string) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+
+    const textArea = document.createElement('textarea');
+    textArea.value = value;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    textArea.style.top = '-9999px';
+    document.body.appendChild(textArea);
+
+    textArea.focus();
+    textArea.select();
+
+    const success = document.execCommand('copy');
+    document.body.removeChild(textArea);
+
+    if (!success) {
+      throw new Error('Fallback copy failed');
+    }
+  }
+
   async function handleCopy(value: string, key: string) {
     try {
-      await navigator.clipboard.writeText(value);
+      await copyText(value);
       setCopiedValue(key);
       showSuccess('Copied');
 
       window.setTimeout(() => {
         setCopiedValue(null);
       }, 1500);
-    } catch {
+    } catch (e) {
+      console.error('Copy failed:', e);
       showError('Failed to copy');
     }
   }
