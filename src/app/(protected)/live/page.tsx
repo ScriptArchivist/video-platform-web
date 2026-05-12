@@ -133,9 +133,17 @@ export default function LiveStudioPage() {
       return null;
     }
 
+    const streamKey = currentSession?.stream_key ?? createdStreamKey ?? '';
+    const rtmpUrl = sessionMeta?.rtmp_url ?? '';
+    const rtmpDisplayUrl =
+      rtmpUrl && streamKey && rtmpUrl.endsWith(`/${streamKey}`)
+        ? rtmpUrl.slice(0, -(streamKey.length + 1))
+        : rtmpUrl;
+
     return {
-      rtmp_url: sessionMeta?.rtmp_url ?? '',
-      stream_key: currentSession?.stream_key ?? createdStreamKey ?? '',
+      rtmp_url: rtmpUrl,
+      rtmp_display_url: rtmpDisplayUrl,
+      stream_key: streamKey,
       hls_url:
         resolveLiveHlsUrl(
           currentSession,
@@ -375,10 +383,10 @@ export default function LiveStudioPage() {
                         <span className="text-sm font-medium text-slate-100">
                           RTMP URL
                         </span>
-                        <CopyButton value={streamSetup.rtmp_url} id="rtmp" />
+                        <CopyButton value={streamSetup.rtmp_display_url} id="rtmp" />
                       </div>
                       <div className="mt-3 break-all font-mono text-sm text-slate-200">
-                        {streamSetup.rtmp_url}
+                        {streamSetup.rtmp_display_url}
                       </div>
                     </div>
                   ) : null}
