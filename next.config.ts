@@ -1,27 +1,31 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  experimental: {
+    middlewareClientMaxBodySize: '500mb',
+  },
+
   async rewrites() {
     return [
       {
         source: '/api/identity/:path*',
-        destination: 'http://192.168.1.12:8001/:path*',
+        destination: 'http://192.168.49.2:30002/:path*',
       },
       {
         source: '/api/video/:path*',
-        destination: 'http://192.168.1.12:8003/api/v1/:path*',
+        destination: 'http://192.168.49.2:30004/api/v1/:path*',
       },
       {
         source: '/api/upload/:path*',
-        destination: 'http://192.168.1.12:8002/api/v1/:path*',
+        destination: 'http://192.168.49.2:30003/api/v1/:path*',
       },
       {
         source: '/api/live/:path*',
-        destination: 'http://192.168.1.12:8004/:path*',
+        destination: 'http://192.168.49.2:30000/api/v1/live/:path*',
       },
       {
         source: '/origin/:path*',
-        destination: 'http://192.168.1.12:8080/:path*',
+        destination: 'http://192.168.49.2:30006/:path*',
       },
     ];
   },
