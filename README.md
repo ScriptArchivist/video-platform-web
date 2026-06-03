@@ -1,184 +1,132 @@
-# Web Video Platform Client
+# Video Platform Web Client
 
-Web client for a video platform built on top of a microservice-based backend.  
-Provides video management, upload workflows, and live stream playback via a modern browser UI.
+Веб-клиент видеоплатформы, разработанный на Next.js.
 
----
+Проект является частью микросервисной видеоплатформы и предоставляет пользовательский интерфейс для работы с видеоконтентом и прямыми трансляциями через браузер.
 
-## Description
+## Возможности
 
-This project is a web application for interacting with a video platform ecosystem.  
-It shares the same backend APIs as the mobile client and supports:
+Пользователь может:
 
-- Video browsing and playback (HLS)
-- Video upload and processing workflow
-- Live stream management and viewing
-- Authentication and protected routes
+* проходить аутентификацию и работать под своей учётной записью;
+* просматривать список загруженных видео;
+* загружать новые видеоролики;
+* отслеживать статус обработки видео;
+* просматривать готовые видеозаписи;
+* создавать и управлять прямыми трансляциями;
+* просматривать активные трансляции в режиме реального времени;
+* получать доступ к личному профилю.
 
-The application is built using Next.js with a modular feature-based architecture.
+Поддерживается воспроизведение видео по протоколу HLS как для записанного контента (VOD), так и для Live-трансляций.
 
----
+## Архитектура проекта
 
-## Features
+Веб-клиент является частью общей микросервисной архитектуры и взаимодействует с backend-сервисами через REST API.
 
-- Authentication (JWT-based)
-- Video list with pagination and filters
-- Video detail and playback (HLS via `hls.js`)
-- Video creation and metadata management
-- Video upload with progress tracking
-- Processing status monitoring
-- Live stream session management
-- Active live sessions list
-- Live playback by stream key
-- Global error handling and form validation
+Основные сервисы платформы:
 
----
+* Identity Service — аутентификация и авторизация пользователей;
+* Video Service — управление видеозаписями;
+* Upload Service — загрузка и обработка файлов;
+* Live Service — управление прямыми трансляциями.
 
-## Tech Stack
+Все запросы к сервисам проксируются через Next.js API Gateway.
 
-| Category        | Technology                          |
-|----------------|-------------------------------------|
-| Framework      | Next.js (App Router)                |
-| Language       | TypeScript                          |
-| UI             | React 19 + Tailwind CSS             |
-| Data Fetching  | React Query (@tanstack/react-query) |
-| HTTP Client    | Axios                               |
-| Forms          | React Hook Form + Zod               |
-| Video Playback | hls.js                              |
-| Icons          | lucide-react                        |
-| Containerization | Docker                            |
+## Технологии
 
----
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* React Query
+* Axios
+* React Hook Form
+* Zod
+* hls.js
+* Docker
 
-## Architecture
+## Структура проекта
 
-Feature-based structure with separation of concerns:
+```text
 src/
-app/ # Next.js App Router (pages, layouts)
-features/ # Domain modules (auth, videos, live, upload)
-shared/ # Shared infrastructure (API, UI, utils)
+├── app/          # страницы и маршруты приложения
+├── features/     # бизнес-функциональность
+├── shared/       # общие компоненты и инфраструктура
+```
 
+Основные модули:
 
-### Key Modules
+* auth — аутентификация пользователей;
+* videos — работа с видеозаписями;
+* upload — загрузка файлов;
+* live — управление прямыми трансляциями;
+* shared/api — взаимодействие с backend API;
+* shared/ui — переиспользуемые компоненты интерфейса.
 
-- `features/auth` — login and authentication logic
-- `features/videos` — video CRUD and playback
-- `features/upload` — upload workflow (init → upload → complete)
-- `features/live` — live sessions and playback
-- `shared/api` — Axios client + error handling
-- `shared/ui` — layout, guards, reusable UI
+## Запуск проекта
 
----
+### Требования
 
-## Routing Overview
+* Node.js 20+
+* npm
 
-| Route                     | Description                     |
-|--------------------------|---------------------------------|
-| `/login`                 | Authentication page            |
-| `/videos`                | Video list                     |
-| `/videos/new`            | Upload video                   |
-| `/videos/[id]`           | Video detail                   |
-| `/live`                  | Live studio                    |
-| `/live/active`           | Active live sessions           |
-| `/watch/live/[streamKey]`| Live stream playback           |
-| `/profile`               | User profile                   |
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20+
-- npm
-
-### Install dependencies
+### Установка зависимостей
 
 ```bash
 npm install
+```
 
-Run in development
+### Запуск в режиме разработки
+
+```bash
 npm run dev
+```
 
-App will be available at:
+После запуска приложение будет доступно по адресу:
 
+```text
 http://localhost:3000
-Production build
+```
+
+### Production-сборка
+
+```bash
 npm run build
 npm run start
-Docker
-Build and run
+```
+
+### Запуск в Docker
+
+```bash
 docker-compose up --build
+```
 
-App will run on:
+После запуска приложение будет доступно по адресу:
 
+```text
 http://localhost:3001
-Environment Variables
+```
 
-The application relies on external backend services.
+## Поддерживаемые браузеры
 
-Variable	Description
-NEXT_PUBLIC_IDENTITY_API_URL	Auth service base URL
-NEXT_PUBLIC_VIDEO_API_URL	Video service base URL
-NEXT_PUBLIC_UPLOAD_API_URL	Upload service base URL
-NEXT_PUBLIC_LIVE_API_URL	Live service base URL
+* Google Chrome
+* Mozilla Firefox
+* Microsoft Edge
+* Safari
 
-Example:
+## Связанные проекты
 
-NEXT_PUBLIC_IDENTITY_API_URL=/api/identity
-NEXT_PUBLIC_VIDEO_API_URL=/api/video
-NEXT_PUBLIC_UPLOAD_API_URL=/api/upload
-NEXT_PUBLIC_LIVE_API_URL=/api/live
-API Integration
+* Video Platform Backend (FastAPI)
+* Video Platform Mobile (Flutter)
 
-The client communicates with backend services via REST APIs.
+## Статус проекта
 
-API Gateway via Next.js rewrites
+Текущий статус: MVP.
 
-All API calls are proxied through Next.js:
+Реализованы основные функции платформы:
 
-/api/identity/* → Identity service
-/api/video/* → Video service
-/api/upload/* → Upload service
-/api/live/* → Live service
-/origin/* → Media origin (HLS)
-Authentication
-JWT stored in localStorage
-Automatically attached via Axios interceptor
-On 401 → redirect to /login
-Error Handling
-Unified error parser (parseApiError)
-Supports:
-FastAPI validation errors
-structured backend errors
-field-level validation messages
-Video Upload Flow
-Create video metadata
-Initialize upload
-Upload binary file
-Complete upload
-Poll processing status
-Playback becomes available
-Live Streaming
-Create live session
-Receive streamKey
-Stream to ingest server
-
-Playback via HLS:
-
-/origin/{streamKey}/index.m3u8
-Supported Platforms
-Chrome (latest)
-Firefox (latest)
-Edge (latest)
-Safari (latest)
-Related Projects
-Backend (FastAPI microservices)
-Mobile client (Flutter)
-Status
-Current stage: MVP / Production-ready core
-Active development
-Core features implemented:
-video upload
-playback
-live streaming
+* загрузка видео;
+* обработка видео;
+* воспроизведение видеоконтента;
+* прямые трансляции;
+* аутентификация пользователей.
