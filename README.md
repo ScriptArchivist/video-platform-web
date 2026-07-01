@@ -6,7 +6,7 @@
 
 ---
 
-## Скриншоты
+## Интерфейс приложения
 
 <p align="center">
   <img src="public/backgrounds/app_overview_.png" width="1000" alt="Скриншоты веб-клиента">
